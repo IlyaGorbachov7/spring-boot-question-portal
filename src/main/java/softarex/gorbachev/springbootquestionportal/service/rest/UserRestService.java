@@ -1,7 +1,6 @@
 package softarex.gorbachev.springbootquestionportal.service.rest;
 
 import lombok.RequiredArgsConstructor;
-import org.aspectj.bridge.Message;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,12 +11,14 @@ import softarex.gorbachev.springbootquestionportal.entity.dto.UserLoginDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.UserRegistrationDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.UserSessionDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.UserUpdateDto;
-import softarex.gorbachev.springbootquestionportal.exception.EmailNotFoundException;
-import softarex.gorbachev.springbootquestionportal.exception.UserAlreadyExistsException;
+import softarex.gorbachev.springbootquestionportal.exception.login.EmailNotFoundException;
+import softarex.gorbachev.springbootquestionportal.exception.login.UserAlreadyExistsException;
 import softarex.gorbachev.springbootquestionportal.mapper.UserMapper;
 import softarex.gorbachev.springbootquestionportal.model.MessageLoginResponse;
 import softarex.gorbachev.springbootquestionportal.model.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.UserService;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -33,12 +34,12 @@ public class UserRestService {
             userService.getUserSessionByEmail(registrationDto.getEmail());
             throw new UserAlreadyExistsException(registrationDto.getEmail());
         } catch (EmailNotFoundException ex) {
-            userService.registrateUser(registrationDto);
             //TODO: отправить сообдение пользователю на imail о ригистации
 
             //TODO: при упешной регистации сохраняем пользователя
+            userService.registrateUser(registrationDto);
         }
-        return new ResponseEntity<>(MessageResponse.of("User is successfully registered!"), HttpStatus.CREATED);
+        return new ResponseEntity<>(new MessageResponse("User is successfully registered!"), HttpStatus.CREATED);
     }
 
     public ResponseEntity<MessageLoginResponse> login(UserLoginDto loginDto) {
@@ -51,16 +52,26 @@ public class UserRestService {
         return userService.getUserSessionByEmail(sessionDetails.getUsername());
     }
 
+    @Transactional
     public ResponseEntity<MessageLoginResponse> updateSessionUser(UserUpdateDto updateDto, UserDetailsImpl authUser) {
         User userTarget = authUser.getTarget();
-        if (!updateDto.getEmail().equals(userTarget.getEmail())) {
+        // check correct entered current user password
+        userService.checkUserPassword(userTarget, updateDto.getPassword());
 
+        if (userService.isUpdatedEmailOrPassword(userTarget, updateDto)) {
+            userService.updateUser(updateDto, userTarget);
+
+            //:TODO отправка сообщения по почте
+
+            // If last update entity will be changed "password" or "email", then needed to create new JWT token
+            ResponseEntity<MessageLoginResponse> res = login(userMapper.receiveUpdatedUserLoginDto(updateDto));
+            String message = Objects.requireNonNull(res.getBody()).getMessage();
+            String token = Objects.requireNonNull(res.getBody()).getToken();
+            return new ResponseEntity<>(new MessageLoginResponse(String.format("Update is successful.\n%s", message), token),
+                    HttpStatus.IM_USED);
         }
-        UserSessionDto sessionDto = userService.updateUser(updateDto, userTarget);
-
-        String token = " "; //:TODO logination login
-
-        return new ResponseEntity<>(new MessageLoginResponse("Update is successful. Mail with confirmation code is send for your email.", token), HttpStatus.IM_USED);
-
+        userService.updateUser(updateDto, userTarget);
+        return new ResponseEntity<>(new MessageLoginResponse("Update is successful.", null), HttpStatus.IM_USED);
     }
+
 }

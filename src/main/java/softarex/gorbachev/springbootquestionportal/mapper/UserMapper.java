@@ -1,7 +1,6 @@
 package softarex.gorbachev.springbootquestionportal.mapper;
 
 
-import org.aspectj.lang.annotation.After;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,19 +23,24 @@ public abstract class UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", source = "updateDto.newPassword",
-            conditionExpression = "java(!updateDto.getNewPassword().isEmpty())",
+            conditionExpression = "java(updateDto.getNewPassword() != null && !updateDto.getNewPassword().isEmpty())",
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     public abstract void updateUserDtoToUser(UserUpdateDto updateDto, @MappingTarget User user);
 
     /**
-     * Callback is run after^
-     * <p>
-     * {@link #userRegistrationDtoToUser(UserRegistrationDto)}
-     * <p>
-     * {@link #updateUserDtoToUser(UserUpdateDto, User)}
+     * strong setting newPassword from UserUpdateDto to UserLoginDto
      */
-    @AfterMapping
-    protected void encodePassword(@MappingTarget User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    @Mapping(target = "password", source = "updateDto.newPassword")
+    public abstract UserLoginDto userUpdateDtoToUserLoginDtoWithNewPassword(UserUpdateDto updateDto);
+
+    public abstract UserLoginDto userUpdateDtoToUserLoginDtoPreviousPassword(UserUpdateDto updateDto);
+
+
+    public UserLoginDto receiveUpdatedUserLoginDto(UserUpdateDto updateDto) {
+        if (!updateDto.getNewPassword().isEmpty()) {
+            return userUpdateDtoToUserLoginDtoWithNewPassword(updateDto);
+        } else {
+            return userUpdateDtoToUserLoginDtoPreviousPassword(updateDto);
+        }
     }
 }

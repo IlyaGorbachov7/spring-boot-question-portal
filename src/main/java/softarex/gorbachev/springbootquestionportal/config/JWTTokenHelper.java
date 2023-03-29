@@ -22,10 +22,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class JWTTokenHelper {
 
-
-    @Value("${jwt.auth.app}")
-    private String appName;
-
     @Value("${jwt.token.secret}")
     private String secretKey;
 

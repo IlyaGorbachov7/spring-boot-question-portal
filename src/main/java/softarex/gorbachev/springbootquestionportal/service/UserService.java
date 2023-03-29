@@ -9,17 +9,20 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import softarex.gorbachev.springbootquestionportal.config.JWTTokenHelper;
 import softarex.gorbachev.springbootquestionportal.entity.User;
 import softarex.gorbachev.springbootquestionportal.entity.dto.UserLoginDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.UserRegistrationDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.UserSessionDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.UserUpdateDto;
-import softarex.gorbachev.springbootquestionportal.exception.EmailNotFoundException;
-import softarex.gorbachev.springbootquestionportal.exception.LoginException;
+import softarex.gorbachev.springbootquestionportal.exception.login.EmailNotFoundException;
+import softarex.gorbachev.springbootquestionportal.exception.login.InvalidedUserPasswordException;
+import softarex.gorbachev.springbootquestionportal.exception.login.LoginException;
+import softarex.gorbachev.springbootquestionportal.exception.login.UserAlreadyExistsException;
 import softarex.gorbachev.springbootquestionportal.mapper.UserMapper;
 import softarex.gorbachev.springbootquestionportal.repository.UserRepository;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -43,8 +46,8 @@ public class UserService {
     }
 
     public UserSessionDto registrateUser(UserRegistrationDto registrationDto) {
-        registrationDto.setPassword(registrationDto.getPassword());
         User user = userMapper.userRegistrationDtoToUser(registrationDto);
+        user.setPassword(encodePassword(user.getPassword()));
         return userMapper.userToSessionDto(userRepository.save(user));
     }
 
@@ -56,28 +59,52 @@ public class UserService {
 
             String token = tokenHelper.generateToken(loginDto.getEmail(), loginDto.getPassword());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
             return token;
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username or password");
         }
     }
 
-    @Transactional
-    public UserSessionDto updateUser(UserUpdateDto updateDto, User userTarget) {
-        userMapper.updateUserDtoToUser(updateDto, userTarget);
-        userRepository.save(userTarget);
-        return userMapper.userToSessionDto(userTarget);
+    public User updateUser(UserUpdateDto updateDto, User userTarget) {
+        if (!updateDto.getEmail().equals(userTarget.getEmail())) {
+            userRepository.findByEmail(updateDto.getEmail()).ifPresent((user) -> {
+                System.out.println("User already exist " + user);
+                throw new UserAlreadyExistsException(updateDto.getEmail());
+            });
+        }
+        userMapper.updateUserDtoToUser(updateDto, userTarget); // changed password is newPassword not Empty
+        if (Objects.equals(userTarget.getPassword(), updateDto.getNewPassword())) { // is password is changed
+            userTarget.setPassword(encodePassword(userTarget.getPassword())); // encode password
+        }
+        userRepository.save(userTarget);// then just update entity
+        return userTarget;
+    }
+
+
+    public void checkUserPassword(User user, String matchPassword) {
+        if (!matchesPassword(matchPassword, user.getPassword())) {
+            throw new InvalidedUserPasswordException();
+        }
     }
 //----------------------------------------------------------------------------------------------------------------------
 
     public User findUserByEmailAndPassword(String email, String password) {
         return userRepository.findByEmail(email)
                 .filter(entity -> matchesPassword(password, entity.getPassword()))
-                .orElseThrow(() -> new LoginException(password));
+                .orElseThrow(() -> new LoginException(email, password));
+    }
+
+    private String encodePassword(String regularPassword) {
+        return passwordEncoder.encode(regularPassword);
     }
 
     private boolean matchesPassword(String regularPassword, String encodedPassword) {
         return passwordEncoder.matches(regularPassword, encodedPassword);
+    }
+
+    public boolean isUpdatedEmailOrPassword(User userTarget, UserUpdateDto updateDto) {
+        return !updateDto.getEmail().equals(userTarget.getEmail()) ||
+               (!updateDto.getNewPassword().isEmpty() &&
+                !matchesPassword(updateDto.getNewPassword(), userTarget.getPassword()));
     }
 }

@@ -2,10 +2,13 @@ package softarex.gorbachev.springbootquestionportal.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -44,7 +47,8 @@ public class SecurityConfiguration implements UserDetailsService {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/api/v1/login", "/api/v1/register").permitAll()
-                                .requestMatchers(HttpMethod.PUT,"/").permitAll() // on the update user
+                                .requestMatchers(HttpMethod.PUT, "/").permitAll() // on the update user
+                                .requestMatchers(HttpMethod.GET, "/").rememberMe()
                                 .anyRequest().authenticated().and()
                                 .addFilterBefore(new JWTAuthenticationFilter(this, jwtTokenHelper, passwordEncoder()),
                                         UsernamePasswordAuthenticationFilter.class));

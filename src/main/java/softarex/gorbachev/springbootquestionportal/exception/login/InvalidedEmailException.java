@@ -1,6 +1,6 @@
-package softarex.gorbachev.springbootquestionportal.exception;
+package softarex.gorbachev.springbootquestionportal.exception.login;
 
-public class InvalidedEmailException extends QuestionPortalServerException{
+public class InvalidedEmailException extends LoginException {
 
     public InvalidedEmailException() {
         super("User email entered incorrectly.");
