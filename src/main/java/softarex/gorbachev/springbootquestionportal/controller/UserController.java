@@ -8,10 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import softarex.gorbachev.springbootquestionportal.config.UserDetailsImpl;
 import softarex.gorbachev.springbootquestionportal.entity.User;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserLoginDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserRegistrationDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserSessionDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserUpdateDto;
+import softarex.gorbachev.springbootquestionportal.entity.dto.*;
 import softarex.gorbachev.springbootquestionportal.model.MessageLoginResponse;
 import softarex.gorbachev.springbootquestionportal.model.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.UserRestService;
@@ -45,6 +42,12 @@ public class UserController {
     public ResponseEntity<MessageLoginResponse> updateSessionUser(@RequestBody UserUpdateDto updateDto,
                                                                   @AuthenticationPrincipal UserDetailsImpl authUser) {
         return userRestService.updateSessionUser(updateDto, authUser);
+    }
+
+    @DeleteMapping("/")
+    public ResponseEntity<MessageResponse> deleteSessionUser(@RequestBody UserPasswordDto passwordDto,
+                                                             @AuthenticationPrincipal UserDetailsImpl authUser) {
+        return userRestService.deleteSessionUserByPassword(passwordDto, authUser);
     }
 
     @GetMapping("/")

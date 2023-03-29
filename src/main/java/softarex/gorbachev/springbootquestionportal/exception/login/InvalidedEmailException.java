@@ -1,12 +1,11 @@
 package softarex.gorbachev.springbootquestionportal.exception.login;
 
 public class InvalidedEmailException extends LoginException {
-
-    public InvalidedEmailException() {
-        super("User email entered incorrectly.");
+    public InvalidedEmailException(String email) {
+        super(String.format("User email %s is invalided format.", email));
     }
 
-    public InvalidedEmailException(String message) {
-        super(message);
+    public InvalidedEmailException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

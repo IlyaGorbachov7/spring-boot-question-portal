@@ -13,7 +13,7 @@ public class LoginException extends QuestionPortalServerException {
     }
 
     public LoginException(String mail,String password) {
-        super(String.format("Email=%s or password=%s entered incorrectly.", mail, password));
+        super(String.format("Email=%s or password=%s entered incorrectly.\n User not founded.", mail, password));
     }
 
     public LoginException(String message, Throwable cause) {

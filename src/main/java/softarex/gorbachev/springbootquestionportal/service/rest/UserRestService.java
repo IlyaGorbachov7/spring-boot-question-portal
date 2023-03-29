@@ -7,13 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import softarex.gorbachev.springbootquestionportal.config.UserDetailsImpl;
 import softarex.gorbachev.springbootquestionportal.entity.User;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserLoginDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserRegistrationDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserSessionDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserUpdateDto;
+import softarex.gorbachev.springbootquestionportal.entity.dto.*;
 import softarex.gorbachev.springbootquestionportal.exception.login.EmailNotFoundException;
 import softarex.gorbachev.springbootquestionportal.exception.login.UserAlreadyExistsException;
 import softarex.gorbachev.springbootquestionportal.mapper.UserMapper;
+import softarex.gorbachev.springbootquestionportal.model.EmailSenderProvider;
 import softarex.gorbachev.springbootquestionportal.model.MessageLoginResponse;
 import softarex.gorbachev.springbootquestionportal.model.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.UserService;
@@ -28,23 +26,24 @@ public class UserRestService {
 
     private final UserMapper userMapper;
 
+    private final EmailSenderProvider emailSenderProvider;
+
     @Transactional
     public ResponseEntity<MessageResponse> register(UserRegistrationDto registrationDto) {
+        String email = registrationDto.getEmail();
         try {
-            userService.getUserSessionByEmail(registrationDto.getEmail());
-            throw new UserAlreadyExistsException(registrationDto.getEmail());
+            userService.getUserSessionByEmail(email);
+            throw new UserAlreadyExistsException(email);
         } catch (EmailNotFoundException ex) {
-            //TODO: отправить сообдение пользователю на imail о ригистации
-
-            //TODO: при упешной регистации сохраняем пользователя
+            emailSenderProvider.sendEmailRegistration(email, registrationDto.getPassword());
             userService.registrateUser(registrationDto);
         }
-        return new ResponseEntity<>(new MessageResponse("User is successfully registered!"), HttpStatus.CREATED);
+        return new ResponseEntity<>(new MessageResponse("User is successfully registered. Mail with confirmation code is send for your email."), HttpStatus.CREATED);
     }
 
     public ResponseEntity<MessageLoginResponse> login(UserLoginDto loginDto) {
         String token = userService.loginUser(loginDto);
-        return new ResponseEntity<>(new MessageLoginResponse("Mail with confirmation code is send for your email.", token),
+        return new ResponseEntity<>(new MessageLoginResponse("User is successfully authorized.", token),
                 HttpStatus.IM_USED);
     }
 
@@ -60,11 +59,10 @@ public class UserRestService {
 
         if (userService.isUpdatedEmailOrPassword(userTarget, updateDto)) {
             userService.updateUser(updateDto, userTarget);
-
-            //:TODO отправка сообщения по почте
-
             // If last update entity will be changed "password" or "email", then needed to create new JWT token
             ResponseEntity<MessageLoginResponse> res = login(userMapper.receiveUpdatedUserLoginDto(updateDto));
+            emailSenderProvider.sendEmailRegistration(updateDto.getEmail(), updateDto.getPassword());
+
             String message = Objects.requireNonNull(res.getBody()).getMessage();
             String token = Objects.requireNonNull(res.getBody()).getToken();
             return new ResponseEntity<>(new MessageLoginResponse(String.format("Update is successful.\n%s", message), token),
@@ -74,4 +72,10 @@ public class UserRestService {
         return new ResponseEntity<>(new MessageLoginResponse("Update is successful.", null), HttpStatus.IM_USED);
     }
 
+    @Transactional
+    public ResponseEntity<MessageResponse> deleteSessionUserByPassword(UserPasswordDto passwordDto, UserDetailsImpl authUser) {
+        userService.deleteUserByPassword(authUser.getTarget(), passwordDto.getPassword());
+        emailSenderProvider.sendEmailDelete(authUser.getUsername());
+        return new ResponseEntity<>(new MessageResponse("User successfully deleted"),HttpStatus.IM_USED);
+    }
 }

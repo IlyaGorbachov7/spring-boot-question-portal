@@ -68,12 +68,12 @@ public class UserService {
     public User updateUser(UserUpdateDto updateDto, User userTarget) {
         if (!updateDto.getEmail().equals(userTarget.getEmail())) {
             userRepository.findByEmail(updateDto.getEmail()).ifPresent((user) -> {
-                System.out.println("User already exist " + user);
                 throw new UserAlreadyExistsException(updateDto.getEmail());
             });
         }
         userMapper.updateUserDtoToUser(updateDto, userTarget); // changed password is newPassword not Empty
         if (Objects.equals(userTarget.getPassword(), updateDto.getNewPassword())) { // is password is changed
+            updateDto.setPassword(userTarget.getPassword()); // necessary transfer changeable/previously value in the above-invoked-method
             userTarget.setPassword(encodePassword(userTarget.getPassword())); // encode password
         }
         userRepository.save(userTarget);// then just update entity
@@ -86,6 +86,12 @@ public class UserService {
             throw new InvalidedUserPasswordException();
         }
     }
+
+    public void deleteUserByPassword(User target, String password) {
+        checkUserPassword(target, password);
+        userRepository.delete(target);
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     public User findUserByEmailAndPassword(String email, String password) {
@@ -107,4 +113,6 @@ public class UserService {
                (!updateDto.getNewPassword().isEmpty() &&
                 !matchesPassword(updateDto.getNewPassword(), userTarget.getPassword()));
     }
+
+
 }

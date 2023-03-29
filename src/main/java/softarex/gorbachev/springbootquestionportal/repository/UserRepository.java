@@ -2,6 +2,7 @@ package softarex.gorbachev.springbootquestionportal.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import softarex.gorbachev.springbootquestionportal.entity.User;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     List<User> findAllByEmailNot(String email);
 
+    @Override
+    void delete(User entity);
 }
