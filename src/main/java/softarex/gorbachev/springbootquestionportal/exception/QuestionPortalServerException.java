@@ -11,4 +11,5 @@ public class QuestionPortalServerException extends RuntimeException{
     public QuestionPortalServerException(String message, Throwable cause) {
         super(message, cause);
     }
+
 }

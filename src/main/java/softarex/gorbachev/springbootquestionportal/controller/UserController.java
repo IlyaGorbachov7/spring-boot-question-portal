@@ -7,15 +7,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import softarex.gorbachev.springbootquestionportal.config.UserDetailsImpl;
-import softarex.gorbachev.springbootquestionportal.entity.User;
 import softarex.gorbachev.springbootquestionportal.entity.dto.*;
 import softarex.gorbachev.springbootquestionportal.model.MessageLoginResponse;
 import softarex.gorbachev.springbootquestionportal.model.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.UserRestService;
 
+import java.time.LocalDateTime;
+
 @Controller
 @ResponseBody // REST controller
-@RequestMapping(value = "/api/v1")
+@RequestMapping(value = "/api/v1/users")
 @CrossOrigin("http://localhost:3000")
 @RequiredArgsConstructor
 public class UserController {
@@ -30,6 +31,16 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<MessageLoginResponse> login(@RequestBody UserLoginDto loginDto) {
         return userRestService.login(loginDto);
+    }
+
+    @PostMapping("/reset")
+    public ResponseEntity<MessageResponse> resetPassword(@RequestBody UserEmailDto emailDto) {
+        return userRestService.resetPasswordFor(emailDto);
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<MessageResponse> changePassword(@RequestBody UserConfigurationCodeDto configurationCodeDto) {
+        return userRestService.changePassword(configurationCodeDto);
     }
 
     @GetMapping("/cur-user")
@@ -49,6 +60,7 @@ public class UserController {
                                                              @AuthenticationPrincipal UserDetailsImpl authUser) {
         return userRestService.deleteSessionUserByPassword(passwordDto, authUser);
     }
+
 
     @GetMapping("/")
     public String getMsg() {

@@ -1,5 +1,6 @@
 package softarex.gorbachev.springbootquestionportal.service.rest;
 
+import jakarta.transaction.TransactionScoped;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,12 @@ import softarex.gorbachev.springbootquestionportal.model.MessageLoginResponse;
 import softarex.gorbachev.springbootquestionportal.model.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserRestService {
 
     private final UserService userService;
@@ -32,7 +35,7 @@ public class UserRestService {
     public ResponseEntity<MessageResponse> register(UserRegistrationDto registrationDto) {
         String email = registrationDto.getEmail();
         try {
-            userService.getUserSessionByEmail(email);
+            userService.findUserByEmail(email);
             throw new UserAlreadyExistsException(email);
         } catch (EmailNotFoundException ex) {
             emailSenderProvider.sendEmailRegistration(email, registrationDto.getPassword());
@@ -76,6 +79,21 @@ public class UserRestService {
     public ResponseEntity<MessageResponse> deleteSessionUserByPassword(UserPasswordDto passwordDto, UserDetailsImpl authUser) {
         userService.deleteUserByPassword(authUser.getTarget(), passwordDto.getPassword());
         emailSenderProvider.sendEmailDelete(authUser.getUsername());
-        return new ResponseEntity<>(new MessageResponse("User successfully deleted"),HttpStatus.IM_USED);
+        return new ResponseEntity<>(new MessageResponse("User successfully deleted"), HttpStatus.IM_USED);
+    }
+
+    @Transactional
+    public ResponseEntity<MessageResponse> resetPasswordFor(UserEmailDto emailDto) {
+        String emailTo = emailDto.getEmail();
+        String configuredCode = userService.resetPasswordAndGenerateConfigurerCodeVerify(emailTo);
+        emailSenderProvider.sendEmailConfirmationCode(emailTo, configuredCode);
+        return new ResponseEntity<>(new MessageResponse("Verification code successfully send to email"),
+                HttpStatus.IM_USED);
+    }
+
+    @Transactional
+    public ResponseEntity<MessageResponse> changePassword(UserConfigurationCodeDto configurationCodeDto) {
+        userService.changePassword(configurationCodeDto);
+        return new ResponseEntity<>(new MessageResponse("Your password successfully changed."), HttpStatus.IM_USED);
     }
 }

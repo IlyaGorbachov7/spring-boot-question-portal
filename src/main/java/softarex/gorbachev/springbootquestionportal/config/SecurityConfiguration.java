@@ -1,7 +1,6 @@
 package softarex.gorbachev.springbootquestionportal.config;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import softarex.gorbachev.springbootquestionportal.entity.User;
+import softarex.gorbachev.springbootquestionportal.model.PasswordGenerator;
 import softarex.gorbachev.springbootquestionportal.repository.UserRepository;
 
 @Configuration
@@ -38,6 +38,16 @@ public class SecurityConfiguration implements UserDetailsService {
     }
 
     @Bean
+    PasswordGenerator passwordGenerator() {
+        PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
+                .useDigits(true)
+                .useLower(true)
+                .useUpper(true)
+                .build();
+        return passwordGenerator;
+    }
+
+    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
@@ -46,7 +56,11 @@ public class SecurityConfiguration implements UserDetailsService {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
-                        authorize.requestMatchers("/api/v1/login", "/api/v1/register").permitAll()
+                        authorize.requestMatchers(
+                                        "/api/v1/users/login",
+                                        "/api/v1/users/register",
+                                        "/api/v1/users/change-password",
+                                        "/api/v1/users/reset").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "/").permitAll() // on the update user
                                 .requestMatchers(HttpMethod.GET, "/").rememberMe()
                                 .anyRequest().authenticated().and()

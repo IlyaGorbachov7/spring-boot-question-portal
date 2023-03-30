@@ -26,7 +26,7 @@ public class EmailProvider {
 
     public synchronized SimpleMailMessage buildResetUserPasswordMailMsg(String emailTo, String confirmationCode) {
         mailSubject = SUBJ_RESET;
-        message = SUBJ_RESET.replace("{1}", emailTo).replace("{2}", confirmationCode);
+        message = MSG_RESET.replace("{1}", emailTo).replace("{2}", confirmationCode);
         return setParamMailMessage(emailTo);
     }
 

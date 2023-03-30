@@ -10,11 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import softarex.gorbachev.springbootquestionportal.config.JWTTokenHelper;
+import softarex.gorbachev.springbootquestionportal.entity.PasswordConfigurerCode;
 import softarex.gorbachev.springbootquestionportal.entity.User;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserLoginDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserRegistrationDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserSessionDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserUpdateDto;
+import softarex.gorbachev.springbootquestionportal.entity.dto.*;
+import softarex.gorbachev.springbootquestionportal.exception.confcode.NoMatchesBetweenConfigurerCodeException;
 import softarex.gorbachev.springbootquestionportal.exception.login.EmailNotFoundException;
 import softarex.gorbachev.springbootquestionportal.exception.login.InvalidedUserPasswordException;
 import softarex.gorbachev.springbootquestionportal.exception.login.LoginException;
@@ -22,6 +21,7 @@ import softarex.gorbachev.springbootquestionportal.exception.login.UserAlreadyEx
 import softarex.gorbachev.springbootquestionportal.mapper.UserMapper;
 import softarex.gorbachev.springbootquestionportal.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Service
@@ -32,18 +32,13 @@ public class UserService {
 
     private final UserMapper userMapper;
 
+    private final PasswordConfigurerCodeService configurerCodeService;
+
     private final AuthenticationManager authenticationManager;
 
     private final JWTTokenHelper tokenHelper;
 
     private final PasswordEncoder passwordEncoder;
-
-
-    public UserSessionDto getUserSessionByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .map(userMapper::userToSessionDto)
-                .orElseThrow(() -> new EmailNotFoundException(email));
-    }
 
     public UserSessionDto registrateUser(UserRegistrationDto registrationDto) {
         User user = userMapper.userRegistrationDtoToUser(registrationDto);
@@ -81,18 +76,47 @@ public class UserService {
     }
 
 
+    public void deleteUserByPassword(User target, String password) {
+        checkUserPassword(target, password);
+        userRepository.delete(target);
+    }
+
+    public String resetPasswordAndGenerateConfigurerCodeVerify(String email) {
+        User user = findUserByEmail(email);
+        PasswordConfigurerCode passwordConfigurerCode = configurerCodeService.createConfigurerCode(user);
+        return passwordConfigurerCode.getCode();
+    }
+
+
+    public void changePassword(UserConfigurationCodeDto configurationCodeDto) {
+        PasswordConfigurerCode configCodeEntity = configurerCodeService.findConfigurerCodeByCode(configurationCodeDto.getCode());
+        configurerCodeService.deleteByUser(configCodeEntity.getUser());
+        User user = configCodeEntity.getUser();
+        if (configurationCodeDto.getEmail().equals(user.getEmail())) {
+            user.setPassword(passwordEncoder.encode(configurationCodeDto.getNewPassword()));
+            userRepository.save(user);
+        } else {
+            throw new NoMatchesBetweenConfigurerCodeException();
+        }
+    }
+    //----------------------------------------------------------------------------------------------------------------------
+
     public void checkUserPassword(User user, String matchPassword) {
         if (!matchesPassword(matchPassword, user.getPassword())) {
             throw new InvalidedUserPasswordException();
         }
     }
 
-    public void deleteUserByPassword(User target, String password) {
-        checkUserPassword(target, password);
-        userRepository.delete(target);
+    public UserSessionDto getUserSessionByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(userMapper::userToSessionDto)
+                .orElseThrow(() -> new EmailNotFoundException(email));
     }
 
-//----------------------------------------------------------------------------------------------------------------------
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new EmailNotFoundException(email));
+    }
 
     public User findUserByEmailAndPassword(String email, String password) {
         return userRepository.findByEmail(email)
@@ -113,6 +137,4 @@ public class UserService {
                (!updateDto.getNewPassword().isEmpty() &&
                 !matchesPassword(updateDto.getNewPassword(), userTarget.getPassword()));
     }
-
-
 }
