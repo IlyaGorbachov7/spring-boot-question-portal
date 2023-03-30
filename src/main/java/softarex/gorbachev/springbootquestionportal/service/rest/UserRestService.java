@@ -17,12 +17,11 @@ import softarex.gorbachev.springbootquestionportal.model.MessageLoginResponse;
 import softarex.gorbachev.springbootquestionportal.model.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.UserService;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class UserRestService {
 
     private final UserService userService;
@@ -31,7 +30,6 @@ public class UserRestService {
 
     private final EmailSenderProvider emailSenderProvider;
 
-    @Transactional
     public ResponseEntity<MessageResponse> register(UserRegistrationDto registrationDto) {
         String email = registrationDto.getEmail();
         try {
@@ -44,17 +42,18 @@ public class UserRestService {
         return new ResponseEntity<>(new MessageResponse("User is successfully registered. Mail with confirmation code is send for your email."), HttpStatus.CREATED);
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<MessageLoginResponse> login(UserLoginDto loginDto) {
         String token = userService.loginUser(loginDto);
         return new ResponseEntity<>(new MessageLoginResponse("User is successfully authorized.", token),
                 HttpStatus.IM_USED);
     }
 
+    @Transactional(readOnly = true)
     public UserSessionDto currentSessionUser(UserDetailsImpl sessionDetails) {
         return userService.getUserSessionByEmail(sessionDetails.getUsername());
     }
 
-    @Transactional
     public ResponseEntity<MessageLoginResponse> updateSessionUser(UserUpdateDto updateDto, UserDetailsImpl authUser) {
         User userTarget = authUser.getTarget();
         // check correct entered current user password
@@ -75,14 +74,12 @@ public class UserRestService {
         return new ResponseEntity<>(new MessageLoginResponse("Update is successful.", null), HttpStatus.IM_USED);
     }
 
-    @Transactional
     public ResponseEntity<MessageResponse> deleteSessionUserByPassword(UserPasswordDto passwordDto, UserDetailsImpl authUser) {
         userService.deleteUserByPassword(authUser.getTarget(), passwordDto.getPassword());
         emailSenderProvider.sendEmailDelete(authUser.getUsername());
         return new ResponseEntity<>(new MessageResponse("User successfully deleted"), HttpStatus.IM_USED);
     }
 
-    @Transactional
     public ResponseEntity<MessageResponse> resetPasswordFor(UserEmailDto emailDto) {
         String emailTo = emailDto.getEmail();
         String configuredCode = userService.resetPasswordAndGenerateConfigurerCodeVerify(emailTo);
@@ -91,7 +88,6 @@ public class UserRestService {
                 HttpStatus.IM_USED);
     }
 
-    @Transactional
     public ResponseEntity<MessageResponse> changePassword(UserConfigurationCodeDto configurationCodeDto) {
         userService.changePassword(configurationCodeDto);
         return new ResponseEntity<>(new MessageResponse("Your password successfully changed."), HttpStatus.IM_USED);
