@@ -9,7 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import softarex.gorbachev.springbootquestionportal.config.JWTTokenHelper;
+import softarex.gorbachev.springbootquestionportal.config.security.JWTTokenHelper;
 import softarex.gorbachev.springbootquestionportal.entity.PasswordConfigurerCode;
 import softarex.gorbachev.springbootquestionportal.entity.User;
 import softarex.gorbachev.springbootquestionportal.entity.dto.*;
@@ -21,7 +21,6 @@ import softarex.gorbachev.springbootquestionportal.exception.login.UserAlreadyEx
 import softarex.gorbachev.springbootquestionportal.mapper.UserMapper;
 import softarex.gorbachev.springbootquestionportal.repository.UserRepository;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Service

@@ -1,4 +1,4 @@
-package softarex.gorbachev.springbootquestionportal.config;
+package softarex.gorbachev.springbootquestionportal.config.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

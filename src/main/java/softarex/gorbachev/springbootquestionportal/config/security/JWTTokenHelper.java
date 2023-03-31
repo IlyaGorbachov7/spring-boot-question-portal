@@ -1,4 +1,4 @@
-package softarex.gorbachev.springbootquestionportal.config;
+package softarex.gorbachev.springbootquestionportal.config.security;
 
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;

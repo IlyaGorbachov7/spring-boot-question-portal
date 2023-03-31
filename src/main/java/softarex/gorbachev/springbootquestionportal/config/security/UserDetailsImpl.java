@@ -1,4 +1,4 @@
-package softarex.gorbachev.springbootquestionportal.config;
+package softarex.gorbachev.springbootquestionportal.config.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
