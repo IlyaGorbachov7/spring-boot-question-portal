@@ -24,22 +24,22 @@ public class UserController {
     private final UserRestService userRestService;
 
     @PostMapping("/register")
-    public ResponseEntity<MessageResponse> registration(@RequestBody UserRegistrationDto registrationDto) {
+    public ResponseEntity<MessageResponse> registration(UserRegistrationDto registrationDto) {
         return userRestService.register(registrationDto);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<MessageLoginResponse> login(@RequestBody UserLoginDto loginDto) {
+    public ResponseEntity<MessageLoginResponse> login(UserLoginDto loginDto) {
         return userRestService.login(loginDto);
     }
 
     @PostMapping("/reset")
-    public ResponseEntity<MessageResponse> resetPassword(@RequestBody UserEmailDto emailDto) {
+    public ResponseEntity<MessageResponse> resetPassword(UserEmailDto emailDto) {
         return userRestService.resetPasswordFor(emailDto);
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<MessageResponse> changePassword(@RequestBody UserConfigurationCodeDto configurationCodeDto) {
+    public ResponseEntity<MessageResponse> changePassword(UserConfigurationCodeDto configurationCodeDto) {
         return userRestService.changePassword(configurationCodeDto);
     }
 
@@ -50,13 +50,13 @@ public class UserController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<MessageLoginResponse> updateSessionUser(@RequestBody UserUpdateDto updateDto,
+    public ResponseEntity<MessageLoginResponse> updateSessionUser(UserUpdateDto updateDto,
                                                                   @AuthenticationPrincipal UserDetailsImpl authUser) {
         return userRestService.updateSessionUser(updateDto, authUser);
     }
 
     @DeleteMapping("/")
-    public ResponseEntity<MessageResponse> deleteSessionUser(@RequestBody UserPasswordDto passwordDto,
+    public ResponseEntity<MessageResponse> deleteSessionUser(UserPasswordDto passwordDto,
                                                              @AuthenticationPrincipal UserDetailsImpl authUser) {
         return userRestService.deleteSessionUserByPassword(passwordDto, authUser);
     }
