@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping("/reset")
-    public ResponseEntity<MessageResponse> resetPassword(UserEmailDto emailDto) {
+    public ResponseEntity<MessageResponse> resetPassword(@RequestBody UserEmailDto emailDto) {
         return userRestService.resetPasswordFor(emailDto);
     }
 
