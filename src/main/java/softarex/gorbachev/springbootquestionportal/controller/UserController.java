@@ -12,6 +12,7 @@ import softarex.gorbachev.springbootquestionportal.model.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.UserRestService;
 
 @RestController
+@CrossOrigin({"http://localhost:3000"})
 @RequestMapping(value = "/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
