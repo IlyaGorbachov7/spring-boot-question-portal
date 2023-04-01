@@ -19,7 +19,7 @@ import softarex.gorbachev.springbootquestionportal.config.security.JWTAuthentica
 import softarex.gorbachev.springbootquestionportal.config.security.JWTTokenHelper;
 import softarex.gorbachev.springbootquestionportal.config.security.UserDetailsImpl;
 import softarex.gorbachev.springbootquestionportal.entity.User;
-import softarex.gorbachev.springbootquestionportal.model.PasswordGenerator;
+import softarex.gorbachev.springbootquestionportal.utils.PasswordGenerator;
 import softarex.gorbachev.springbootquestionportal.repository.UserRepository;
 
 import static softarex.gorbachev.springbootquestionportal.constant.requ_map.UsersRequestMappingConst.*;

@@ -1,4 +1,4 @@
-package softarex.gorbachev.springbootquestionportal.model;
+package softarex.gorbachev.springbootquestionportal.utils;
 
 import lombok.AllArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;

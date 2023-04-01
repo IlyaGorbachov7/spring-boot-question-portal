@@ -1,4 +1,4 @@
-package softarex.gorbachev.springbootquestionportal.model;
+package softarex.gorbachev.springbootquestionportal.utils;
 
 import java.util.ArrayList;
 import java.util.List;

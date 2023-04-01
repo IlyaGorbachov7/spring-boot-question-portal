@@ -1,6 +1,5 @@
-package softarex.gorbachev.springbootquestionportal.model;
+package softarex.gorbachev.springbootquestionportal.utils;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;

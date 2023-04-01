@@ -11,7 +11,7 @@ import softarex.gorbachev.springbootquestionportal.exception.confcode.ChangeConf
 import softarex.gorbachev.springbootquestionportal.exception.confcode.NoFoundConfigurerCodeForUserEmail;
 import softarex.gorbachev.springbootquestionportal.exception.confcode.NoMatchesBetweenConfigurerCodeException;
 import softarex.gorbachev.springbootquestionportal.mapper.PasswordConfigurationCodeMapper;
-import softarex.gorbachev.springbootquestionportal.model.PasswordGenerator;
+import softarex.gorbachev.springbootquestionportal.utils.PasswordGenerator;
 import softarex.gorbachev.springbootquestionportal.repository.PasswordTokenRepository;
 
 import java.time.LocalDateTime;
