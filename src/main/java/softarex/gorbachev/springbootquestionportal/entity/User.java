@@ -1,9 +1,8 @@
 package softarex.gorbachev.springbootquestionportal.entity;
 
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.persistence.*;
 import lombok.*;
-import softarex.gorbachev.springbootquestionportal.model.Roles;
+import softarex.gorbachev.springbootquestionportal.config.security.Roles;
 
 @Entity
 @Table(name = "users", schema = "questportal")

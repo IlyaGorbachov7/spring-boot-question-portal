@@ -1,4 +1,4 @@
-package softarex.gorbachev.springbootquestionportal.model;
+package softarex.gorbachev.springbootquestionportal.service.mdls;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;

@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import softarex.gorbachev.springbootquestionportal.exception.login.LoginException;
 import softarex.gorbachev.springbootquestionportal.exception.QuestionPortalServerException;
-import softarex.gorbachev.springbootquestionportal.model.BadMessageResponse;
-import softarex.gorbachev.springbootquestionportal.model.MessageResponse;
+import softarex.gorbachev.springbootquestionportal.service.mdls.BadMessageResponse;
 
 @RestControllerAdvice
 public class AppRestExceptionHandler {

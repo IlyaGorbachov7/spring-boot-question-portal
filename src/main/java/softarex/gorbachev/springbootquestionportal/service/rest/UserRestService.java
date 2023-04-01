@@ -12,8 +12,8 @@ import softarex.gorbachev.springbootquestionportal.exception.login.EmailNotFound
 import softarex.gorbachev.springbootquestionportal.exception.login.UserAlreadyExistsException;
 import softarex.gorbachev.springbootquestionportal.mapper.UserMapper;
 import softarex.gorbachev.springbootquestionportal.utils.EmailSenderProvider;
-import softarex.gorbachev.springbootquestionportal.model.MessageLoginResponse;
-import softarex.gorbachev.springbootquestionportal.model.MessageResponse;
+import softarex.gorbachev.springbootquestionportal.service.mdls.MessageLoginResponse;
+import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.UserService;
 
 import java.util.Objects;

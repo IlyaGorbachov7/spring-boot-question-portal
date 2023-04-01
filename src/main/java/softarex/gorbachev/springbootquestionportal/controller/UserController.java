@@ -7,8 +7,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import softarex.gorbachev.springbootquestionportal.config.security.UserDetailsImpl;
 import softarex.gorbachev.springbootquestionportal.entity.dto.*;
-import softarex.gorbachev.springbootquestionportal.model.MessageLoginResponse;
-import softarex.gorbachev.springbootquestionportal.model.MessageResponse;
+import softarex.gorbachev.springbootquestionportal.service.mdls.MessageLoginResponse;
+import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.UserRestService;
 
 import static softarex.gorbachev.springbootquestionportal.constant.requ_map.UsersRequestMappingConst.*;

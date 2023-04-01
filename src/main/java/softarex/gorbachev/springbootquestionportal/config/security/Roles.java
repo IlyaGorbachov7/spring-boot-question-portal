@@ -1,4 +1,4 @@
-package softarex.gorbachev.springbootquestionportal.model;
+package softarex.gorbachev.springbootquestionportal.config.security;
 
 import org.springframework.security.core.GrantedAuthority;
 
