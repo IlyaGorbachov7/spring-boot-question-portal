@@ -8,7 +8,7 @@ import softarex.gorbachev.springbootquestionportal.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-03-31T17:11:04+0300",
+    date = "2023-03-31T21:27:54+0300",
     comments = "version: 1.5.2.Final, compiler: javac, environment: Java 17.0.3 (Oracle Corporation)"
 )
 @Component

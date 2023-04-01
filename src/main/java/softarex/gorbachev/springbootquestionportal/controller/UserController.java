@@ -11,52 +11,52 @@ import softarex.gorbachev.springbootquestionportal.model.MessageLoginResponse;
 import softarex.gorbachev.springbootquestionportal.model.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.UserRestService;
 
+import static softarex.gorbachev.springbootquestionportal.constant.requ_map.UsersRequestMappingConst.*;
+
 @RestController
-@CrossOrigin({"http://localhost:3000"})
-@RequestMapping(value = "/api/v1/users")
+@RequestMapping(USERS_CONTROLLER)
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserRestService userRestService;
 
-    @PostMapping("/register")
+    @PostMapping(USERS_REGISTER)
     public ResponseEntity<MessageResponse> registration(@RequestBody UserRegistrationDto registrationDto) {
         return userRestService.register(registrationDto);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<MessageLoginResponse> login(UserLoginDto loginDto) {
+    @PostMapping(USERS_LOGIN)
+    public ResponseEntity<MessageLoginResponse> login(@RequestBody UserLoginDto loginDto) {
         return userRestService.login(loginDto);
     }
 
-    @PostMapping("/reset")
+    @PostMapping(USERS_RESETPASSWORD)
     public ResponseEntity<MessageResponse> resetPassword(@RequestBody UserEmailDto emailDto) {
         return userRestService.resetPasswordFor(emailDto);
     }
 
-    @PostMapping("/change-password")
-    public ResponseEntity<MessageResponse> changePassword(UserConfigurationCodeDto configurationCodeDto) {
+    @PostMapping(USERS_CHANGEPASSWORD)
+    public ResponseEntity<MessageResponse> changePassword(@RequestBody UserConfigurationCodeDto configurationCodeDto) {
         return userRestService.changePassword(configurationCodeDto);
     }
 
-    @GetMapping("/cur-user")
+    @GetMapping(USERS_CURUSER)
     public ResponseEntity<UserSessionDto> currentSessionUser(@AuthenticationPrincipal() UserDetailsImpl authUser) {
         UserSessionDto sessionDto = userRestService.currentSessionUser(authUser);
         return new ResponseEntity<>(sessionDto, HttpStatus.IM_USED);
     }
 
-    @PutMapping("/")
-    public ResponseEntity<MessageLoginResponse> updateSessionUser(UserUpdateDto updateDto,
+    @PutMapping(USERS_CURUSER)
+    public ResponseEntity<MessageLoginResponse> updateSessionUser(@RequestBody UserUpdateDto updateDto,
                                                                   @AuthenticationPrincipal UserDetailsImpl authUser) {
         return userRestService.updateSessionUser(updateDto, authUser);
     }
 
-    @DeleteMapping("/")
-    public ResponseEntity<MessageResponse> deleteSessionUser(UserPasswordDto passwordDto,
+    @DeleteMapping(USERS_CURUSER)
+    public ResponseEntity<MessageResponse> deleteSessionUser(@RequestBody UserPasswordDto passwordDto,
                                                              @AuthenticationPrincipal UserDetailsImpl authUser) {
         return userRestService.deleteSessionUserByPassword(passwordDto, authUser);
     }
-
 
     @GetMapping("/")
     public String getMsg() {

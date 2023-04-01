@@ -22,6 +22,8 @@ import softarex.gorbachev.springbootquestionportal.entity.User;
 import softarex.gorbachev.springbootquestionportal.model.PasswordGenerator;
 import softarex.gorbachev.springbootquestionportal.repository.UserRepository;
 
+import static softarex.gorbachev.springbootquestionportal.constant.requ_map.UsersRequestMappingConst.*;
+
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -38,12 +40,11 @@ public class SecurityConfiguration implements UserDetailsService {
 
     @Bean
     PasswordGenerator passwordGenerator() {
-        PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
+        return new PasswordGenerator.PasswordGeneratorBuilder()
                 .useDigits(true)
                 .useLower(true)
                 .useUpper(true)
                 .build();
-        return passwordGenerator;
     }
 
     @Bean
@@ -56,12 +57,12 @@ public class SecurityConfiguration implements UserDetailsService {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers(
-                                        "/api/v1/users/login",
-                                        "/api/v1/users/register",
-                                        "/api/v1/users/change-password",
-                                        "/api/v1/users/reset").permitAll()
-                                .requestMatchers(HttpMethod.PUT, "/").permitAll() // on the update user
-                                .requestMatchers(HttpMethod.GET, "/").rememberMe()
+                                        (USERS_CONTROLLER + USERS_LOGIN),
+                                        (USERS_CONTROLLER + USERS_REGISTER),
+                                        (USERS_CONTROLLER + USERS_CHANGEPASSWORD),
+                                        (USERS_CONTROLLER + USERS_RESETPASSWORD)).permitAll()
+                                .requestMatchers(HttpMethod.PUT, USERS_CONTROLLER + "/").permitAll() // on the update user
+                                .requestMatchers(HttpMethod.GET, USERS_CONTROLLER + "/").permitAll()
                                 .anyRequest().authenticated().and()
                                 .addFilterBefore(new JWTAuthenticationFilter(this, jwtTokenHelper, passwordEncoder()),
                                         UsernamePasswordAuthenticationFilter.class));
