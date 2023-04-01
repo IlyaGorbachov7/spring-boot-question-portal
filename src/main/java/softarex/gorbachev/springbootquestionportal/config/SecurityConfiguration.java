@@ -11,16 +11,15 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import softarex.gorbachev.springbootquestionportal.config.security.JWTAuthenticationFilter;
 import softarex.gorbachev.springbootquestionportal.config.security.JWTTokenHelper;
 import softarex.gorbachev.springbootquestionportal.config.security.UserDetailsImpl;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserDto;
-import softarex.gorbachev.springbootquestionportal.service.UserService;
-import softarex.gorbachev.springbootquestionportal.utils.PasswordGenerator;
+import softarex.gorbachev.springbootquestionportal.entity.User;
+import softarex.gorbachev.springbootquestionportal.mapper.UserMapper;
+import softarex.gorbachev.springbootquestionportal.repository.UserRepository;
 
 import static softarex.gorbachev.springbootquestionportal.constant.requ_map.UsersRequestMappingConst.*;
 
@@ -29,23 +28,13 @@ import static softarex.gorbachev.springbootquestionportal.constant.requ_map.User
 @EnableWebSecurity
 public class SecurityConfiguration implements UserDetailsService {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
+
+    private final UserMapper userMapper;
 
     private final JWTTokenHelper jwtTokenHelper;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    PasswordGenerator passwordGenerator() {
-        return new PasswordGenerator.PasswordGeneratorBuilder()
-                .useDigits(true)
-                .useLower(true)
-                .useUpper(true)
-                .build();
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -64,7 +53,7 @@ public class SecurityConfiguration implements UserDetailsService {
                                 .requestMatchers(HttpMethod.PUT, USERS_CONTROLLER + "/").permitAll() // on the update user
                                 .requestMatchers(HttpMethod.GET, USERS_CONTROLLER + "/").permitAll()
                                 .anyRequest().authenticated().and()
-                                .addFilterBefore(new JWTAuthenticationFilter(this, jwtTokenHelper, passwordEncoder()),
+                                .addFilterBefore(new JWTAuthenticationFilter(this, jwtTokenHelper, passwordEncoder),
                                         UsernamePasswordAuthenticationFilter.class));
 
         http.csrf().disable().cors().and().headers().frameOptions().disable();
@@ -76,11 +65,8 @@ public class SecurityConfiguration implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        try {
-            UserDto userDto = userService.findUserByEmail(email);
-            return new UserDetailsImpl(userDto);
-        } catch (Exception ex) {
-            throw new UsernameNotFoundException("Failed to retrieve user: " + email);
-        }
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Failed to retrieve user: " + email));
+        return new UserDetailsImpl(userMapper.userToUserDto(user));
     }
 }
