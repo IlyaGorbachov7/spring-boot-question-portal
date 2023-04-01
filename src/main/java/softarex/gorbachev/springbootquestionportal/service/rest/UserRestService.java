@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import softarex.gorbachev.springbootquestionportal.config.security.UserDetailsImpl;
-import softarex.gorbachev.springbootquestionportal.entity.User;
 import softarex.gorbachev.springbootquestionportal.entity.dto.*;
 import softarex.gorbachev.springbootquestionportal.exception.login.EmailNotFoundException;
 import softarex.gorbachev.springbootquestionportal.exception.login.UserAlreadyExistsException;
@@ -36,9 +35,10 @@ public class UserRestService {
             throw new UserAlreadyExistsException(email);
         } catch (EmailNotFoundException ex) {
             emailSenderProvider.sendEmailRegistration(email, registrationDto.getPassword());
-            userService.registrateUser(registrationDto);
+            userService.registerUser(registrationDto);
         }
-        return new ResponseEntity<>(new MessageResponse("User is successfully registered. Mail with confirmation code is send for your email."), HttpStatus.CREATED);
+        return new ResponseEntity<>(new MessageResponse(
+                "User is successfully registered. Mail with confirmation code is send for your email."), HttpStatus.CREATED);
     }
 
     @Transactional(readOnly = true)
@@ -54,12 +54,12 @@ public class UserRestService {
     }
 
     public ResponseEntity<MessageLoginResponse> updateSessionUser(UserUpdateDto updateDto, UserDetailsImpl authUser) {
-        User userTarget = authUser.getTarget();
+        UserDto userDto = authUser.getTarget();
         // check correct entered current user password
-        userService.checkUserPassword(userTarget, updateDto.getPassword());
+        userService.checkUserPassword(userDto, updateDto.getPassword());
 
-        if (userService.isUpdatedEmailOrPassword(userTarget, updateDto)) {
-            userService.updateUser(updateDto, userTarget);
+        if (userService.isUpdatedEmailOrPassword(userDto, updateDto)) {
+            userService.updateUser(updateDto, userDto);
             // If last update entity will be changed "password" or "email", then needed to create new JWT token
             ResponseEntity<MessageLoginResponse> res = login(userMapper.receiveUpdatedUserLoginDto(updateDto));
             emailSenderProvider.sendEmailRegistration(updateDto.getEmail(), updateDto.getPassword());
@@ -69,7 +69,7 @@ public class UserRestService {
             return new ResponseEntity<>(new MessageLoginResponse(String.format("Update is successful.\n%s", message), token),
                     HttpStatus.IM_USED);
         }
-        userService.updateUser(updateDto, userTarget);
+        userService.updateUser(updateDto, userDto);
         return new ResponseEntity<>(new MessageLoginResponse("Update is successful.", null), HttpStatus.IM_USED);
     }
 

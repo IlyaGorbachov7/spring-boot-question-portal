@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import softarex.gorbachev.springbootquestionportal.entity.User;
+import softarex.gorbachev.springbootquestionportal.entity.dto.UserDto;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -13,7 +14,7 @@ import java.util.Collections;
 @Getter
 public class UserDetailsImpl implements UserDetails {
 
-    private User target;
+    private UserDto target;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -25,7 +26,7 @@ public class UserDetailsImpl implements UserDetails {
         return target.getPassword();
     }
 
-    public User getTarget(){
+    public UserDto getTarget(){
         return target;
     }
 

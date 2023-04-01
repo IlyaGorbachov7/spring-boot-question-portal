@@ -8,15 +8,17 @@ import softarex.gorbachev.springbootquestionportal.entity.User;
 
 import java.util.Optional;
 
-public interface PasswordTokenRepository extends CrudRepository<PasswordConfigurerCode, Long> {
+public interface PasswordConfigurerCodeRepository extends CrudRepository<PasswordConfigurerCode, String> {
     @Transactional
     @Override
     void delete(PasswordConfigurerCode entity);
-
-    void deleteByUser(User user);
 
     @Query(value = "select t from PasswordConfigurerCode t where t.user.email = :email")
     Optional<PasswordConfigurerCode> findByUserEmail(String email);
 
     Optional<PasswordConfigurerCode> findByCode(String code);
+
+    // join query
+    @Query(value = "select t from PasswordConfigurerCode t where t.code = :code and t.user.email = :email ")
+    Optional<PasswordConfigurerCode> findByCodeAndUserEmail(String code, String email);
 }

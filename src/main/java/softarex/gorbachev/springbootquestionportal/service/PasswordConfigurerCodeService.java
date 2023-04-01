@@ -5,14 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import softarex.gorbachev.springbootquestionportal.entity.PasswordConfigurerCode;
-import softarex.gorbachev.springbootquestionportal.entity.User;
+import softarex.gorbachev.springbootquestionportal.entity.dto.PasswordConfigurerCodeDto;
+import softarex.gorbachev.springbootquestionportal.entity.dto.UserDto;
 import softarex.gorbachev.springbootquestionportal.exception.QuestionPortalServerException;
 import softarex.gorbachev.springbootquestionportal.exception.confcode.ChangeConfigurationCodeExistUserException;
-import softarex.gorbachev.springbootquestionportal.exception.confcode.NoFoundConfigurerCodeForUserEmail;
-import softarex.gorbachev.springbootquestionportal.exception.confcode.NoMatchesBetweenConfigurerCodeException;
+import softarex.gorbachev.springbootquestionportal.exception.confcode.ConfigurerCodeException;
 import softarex.gorbachev.springbootquestionportal.mapper.PasswordConfigurationCodeMapper;
+import softarex.gorbachev.springbootquestionportal.mapper.UserMapper;
 import softarex.gorbachev.springbootquestionportal.utils.PasswordGenerator;
-import softarex.gorbachev.springbootquestionportal.repository.PasswordTokenRepository;
+import softarex.gorbachev.springbootquestionportal.repository.PasswordConfigurerCodeRepository;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -21,9 +22,9 @@ import java.time.temporal.ChronoUnit;
 @RequiredArgsConstructor
 public class PasswordConfigurerCodeService {
 
-    private final PasswordTokenRepository tokenRepository;
+    private final PasswordConfigurerCodeRepository passwordConfigCodeRepository;
 
-    private final PasswordConfigurationCodeMapper tokenMapper;
+    private final PasswordConfigurationCodeMapper passwordConfigCodeMapper;
 
     private final PasswordGenerator passwordGenerator;
 
@@ -35,39 +36,35 @@ public class PasswordConfigurerCodeService {
     @Value("${email.expiry-datetime.type}")
     private String chronoUnit;
 
-    public PasswordConfigurerCode createConfigurerCode(User user) {
-        tokenRepository.findByUserEmail(user.getEmail())
-                .ifPresent((configureCode) -> {
-                    if (!LocalDateTime.now().isAfter(configureCode.getExpiryDateTime())) {
-                        throw new ChangeConfigurationCodeExistUserException(user.getEmail(), expiryDatetime, chronoUnit);
+    public PasswordConfigurerCodeDto createConfigurerCode(UserDto userDto) {
+        passwordConfigCodeRepository.findByUserEmail(userDto.getEmail())
+                .ifPresent((configureCodeEntity) -> {
+                    if (!LocalDateTime.now().isAfter(configureCodeEntity.getExpiryDateTime())) {
+                        throw new ChangeConfigurationCodeExistUserException(userDto.getEmail(), expiryDatetime, chronoUnit);
                     } else {
-                        tokenRepository.delete(configureCode);
+                        passwordConfigCodeRepository.delete(configureCodeEntity);
                         entityManager.flush();
                     }
                 });
         PasswordConfigurerCode passwordConfigurerCode;
         try {
             String code = passwordGenerator.generate(6);
-            passwordConfigurerCode = tokenMapper.toPasswordToken(user, code,
+            passwordConfigurerCode = passwordConfigCodeMapper.toPasswordConfigurerCode(userDto, code,
                     LocalDateTime.now().plus(expiryDatetime, ChronoUnit.valueOf(chronoUnit)));
-            tokenRepository.save(passwordConfigurerCode);
+            passwordConfigCodeRepository.save(passwordConfigurerCode);
         } catch (Exception e) {
             throw new QuestionPortalServerException("Error", e);
         }
-        return passwordConfigurerCode;
+        return passwordConfigCodeMapper.passwordConfCodeToPasswordConfCodeDto(passwordConfigurerCode);
     }
 
-    public void deleteByUser(User user) {
-        tokenRepository.deleteByUser(user);
+    public PasswordConfigurerCodeDto findConfigurerCodeByCodeAndUserEmail(String code, String email) {
+        return passwordConfigCodeRepository.findByCodeAndUserEmail(code, email)
+                .map(passwordConfigCodeMapper::passwordConfCodeToPasswordConfCodeDto)
+                .orElseThrow(() -> new ConfigurerCodeException(email));
     }
 
-    public PasswordConfigurerCode findConfigurerCodeByUserEmail(User user) {
-        return tokenRepository.findByUserEmail(user.getEmail())
-                .orElseThrow(NoFoundConfigurerCodeForUserEmail::new);
-    }
-
-    public PasswordConfigurerCode findConfigurerCodeByCode(String code) {
-        return tokenRepository.findByCode(code)
-                .orElseThrow(NoMatchesBetweenConfigurerCodeException::new);
+    public void deleteById(String id) {
+        passwordConfigCodeRepository.deleteById(id);
     }
 }

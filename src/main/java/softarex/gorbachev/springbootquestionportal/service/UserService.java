@@ -10,10 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import softarex.gorbachev.springbootquestionportal.config.security.JWTTokenHelper;
-import softarex.gorbachev.springbootquestionportal.entity.PasswordConfigurerCode;
 import softarex.gorbachev.springbootquestionportal.entity.User;
 import softarex.gorbachev.springbootquestionportal.entity.dto.*;
-import softarex.gorbachev.springbootquestionportal.exception.confcode.NoMatchesBetweenConfigurerCodeException;
 import softarex.gorbachev.springbootquestionportal.exception.login.EmailNotFoundException;
 import softarex.gorbachev.springbootquestionportal.exception.login.InvalidedUserPasswordException;
 import softarex.gorbachev.springbootquestionportal.exception.login.LoginException;
@@ -39,14 +37,14 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserSessionDto registrateUser(UserRegistrationDto registrationDto) {
+    public UserSessionDto registerUser(UserRegistrationDto registrationDto) {
         User user = userMapper.userRegistrationDtoToUser(registrationDto);
         user.setPassword(encodePassword(user.getPassword()));
         return userMapper.userToSessionDto(userRepository.save(user));
     }
 
     public String loginUser(UserLoginDto loginDto) {
-        User user = findUserByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword());
+        UserDto userDto = findUserByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword());
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
@@ -59,49 +57,44 @@ public class UserService {
         }
     }
 
-    public User updateUser(UserUpdateDto updateDto, User userTarget) {
-        if (!updateDto.getEmail().equals(userTarget.getEmail())) {
-            userRepository.findByEmail(updateDto.getEmail()).ifPresent((user) -> {
-                throw new UserAlreadyExistsException(updateDto.getEmail());
-            });
+    public void updateUser(UserUpdateDto updateDto, UserDto userDto) {
+        if (!updateDto.getEmail().equals(userDto.getEmail())) {
+            userRepository.findByEmail(updateDto.getEmail())
+                    .ifPresent((user) -> {
+                        throw new UserAlreadyExistsException(user.getEmail());
+                    });
         }
-        userMapper.updateUserDtoToUser(updateDto, userTarget); // changed password is newPassword not Empty
-        if (Objects.equals(userTarget.getPassword(), updateDto.getNewPassword())) { // is password is changed
-            updateDto.setPassword(userTarget.getPassword()); // necessary transfer changeable/previously value in the above-invoked-method
-            userTarget.setPassword(encodePassword(userTarget.getPassword())); // encode password
+        userMapper.updateUserDtoFromUpdateDto(userDto, updateDto);
+        if (Objects.equals(userDto.getPassword(), updateDto.getNewPassword())) {
+            updateDto.setPassword(userDto.getPassword());
+            userDto.setPassword(encodePassword(userDto.getPassword()));
         }
-        userRepository.save(userTarget);// then just update entity
-        return userTarget;
+        userRepository.save(userMapper.userDtoToUser(userDto));
     }
 
 
-    public void deleteUserByPassword(User target, String password) {
-        checkUserPassword(target, password);
-        userRepository.delete(target);
+    public void deleteUserByPassword(UserDto userDto, String password) {
+        checkUserPassword(userDto, password);
+        userRepository.delete(userMapper.userDtoToUser(userDto));
     }
 
     public String resetPasswordAndGenerateConfigurerCodeVerify(String email) {
-        User user = findUserByEmail(email);
-        PasswordConfigurerCode passwordConfigurerCode = configurerCodeService.createConfigurerCode(user);
+        UserDto userDto = findUserByEmail(email);
+        PasswordConfigurerCodeDto passwordConfigurerCode = configurerCodeService.createConfigurerCode(userDto);
         return passwordConfigurerCode.getCode();
     }
 
-
-    public void changePassword(UserConfigurationCodeDto configurationCodeDto) {
-        PasswordConfigurerCode configCodeEntity = configurerCodeService.findConfigurerCodeByCode(configurationCodeDto.getCode());
-        configurerCodeService.deleteByUser(configCodeEntity.getUser());
-        User user = configCodeEntity.getUser();
-        if (configurationCodeDto.getEmail().equals(user.getEmail())) {
-            user.setPassword(passwordEncoder.encode(configurationCodeDto.getNewPassword()));
-            userRepository.save(user);
-        } else {
-            throw new NoMatchesBetweenConfigurerCodeException();
-        }
+    public void changePassword(UserConfigurationCodeDto userConfCodeDto) {
+        PasswordConfigurerCodeDto configCodeDto = configurerCodeService
+                .findConfigurerCodeByCodeAndUserEmail(userConfCodeDto.getCode(), userConfCodeDto.getEmail());
+        UserDto userDto = configCodeDto.getUserDto();
+        userDto.setPassword(passwordEncoder.encode(userConfCodeDto.getNewPassword()));
+        userRepository.save(userMapper.userDtoToUser(userDto)); // update password
+        configurerCodeService.deleteById(configCodeDto.getId());
     }
-    //----------------------------------------------------------------------------------------------------------------------
 
-    public void checkUserPassword(User user, String matchPassword) {
-        if (!matchesPassword(matchPassword, user.getPassword())) {
+    public void checkUserPassword(UserDto userDto, String matchPassword) {
+        if (!matchesPassword(matchPassword, userDto.getPassword())) {
             throw new InvalidedUserPasswordException();
         }
     }
@@ -112,14 +105,22 @@ public class UserService {
                 .orElseThrow(() -> new EmailNotFoundException(email));
     }
 
-    public User findUserByEmail(String email) {
+    public UserDto findUserByEmail(String email) {
         return userRepository.findByEmail(email)
+                .map(userMapper::userToUserDto)
                 .orElseThrow(() -> new EmailNotFoundException(email));
     }
 
-    public User findUserByEmailAndPassword(String email, String password) {
+    public boolean isUpdatedEmailOrPassword(UserDto userTarget, UserUpdateDto updateDto) {
+        return !updateDto.getEmail().equals(userTarget.getEmail()) ||
+               (!updateDto.getNewPassword().isEmpty() &&
+                !matchesPassword(updateDto.getNewPassword(), userTarget.getPassword()));
+    }
+
+    private UserDto findUserByEmailAndPassword(String email, String password) {
         return userRepository.findByEmail(email)
                 .filter(entity -> matchesPassword(password, entity.getPassword()))
+                .map(userMapper::userToUserDto)
                 .orElseThrow(() -> new LoginException(email, password));
     }
 
@@ -129,11 +130,5 @@ public class UserService {
 
     private boolean matchesPassword(String regularPassword, String encodedPassword) {
         return passwordEncoder.matches(regularPassword, encodedPassword);
-    }
-
-    public boolean isUpdatedEmailOrPassword(User userTarget, UserUpdateDto updateDto) {
-        return !updateDto.getEmail().equals(userTarget.getEmail()) ||
-               (!updateDto.getNewPassword().isEmpty() &&
-                !matchesPassword(updateDto.getNewPassword(), userTarget.getPassword()));
     }
 }

@@ -18,9 +18,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import softarex.gorbachev.springbootquestionportal.config.security.JWTAuthenticationFilter;
 import softarex.gorbachev.springbootquestionportal.config.security.JWTTokenHelper;
 import softarex.gorbachev.springbootquestionportal.config.security.UserDetailsImpl;
-import softarex.gorbachev.springbootquestionportal.entity.User;
+import softarex.gorbachev.springbootquestionportal.entity.dto.UserDto;
+import softarex.gorbachev.springbootquestionportal.service.UserService;
 import softarex.gorbachev.springbootquestionportal.utils.PasswordGenerator;
-import softarex.gorbachev.springbootquestionportal.repository.UserRepository;
 
 import static softarex.gorbachev.springbootquestionportal.constant.requ_map.UsersRequestMappingConst.*;
 
@@ -29,7 +29,7 @@ import static softarex.gorbachev.springbootquestionportal.constant.requ_map.User
 @EnableWebSecurity
 public class SecurityConfiguration implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     private final JWTTokenHelper jwtTokenHelper;
 
@@ -76,8 +76,11 @@ public class SecurityConfiguration implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Failed to retrieve user: " + email));
-        return new UserDetailsImpl(user);
+        try {
+            UserDto userDto = userService.findUserByEmail(email);
+            return new UserDetailsImpl(userDto);
+        } catch (Exception ex) {
+            throw new UsernameNotFoundException("Failed to retrieve user: " + email);
+        }
     }
 }

@@ -5,16 +5,17 @@ import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import softarex.gorbachev.springbootquestionportal.entity.User;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserLoginDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserRegistrationDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserSessionDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserUpdateDto;
+import softarex.gorbachev.springbootquestionportal.entity.dto.*;
 
 @Mapper(componentModel = "spring")
 public abstract class UserMapper {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    public abstract UserDto userToUserDto(User user);
+
+    public abstract User userDtoToUser(UserDto userDto);
 
     @Mapping(target = "id", ignore = true)
     public abstract User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto);
@@ -25,7 +26,7 @@ public abstract class UserMapper {
     @Mapping(target = "password", source = "updateDto.newPassword",
             conditionExpression = "java(updateDto.getNewPassword() != null && !updateDto.getNewPassword().isEmpty())",
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    public abstract void updateUserDtoToUser(UserUpdateDto updateDto, @MappingTarget User user);
+    public abstract void updateUserDtoFromUpdateDto(@MappingTarget UserDto userDto, UserUpdateDto updateDto);
 
     /**
      * strong setting newPassword from UserUpdateDto to UserLoginDto
@@ -43,4 +44,5 @@ public abstract class UserMapper {
             return userUpdateDtoToUserLoginDtoPreviousPassword(updateDto);
         }
     }
+
 }
