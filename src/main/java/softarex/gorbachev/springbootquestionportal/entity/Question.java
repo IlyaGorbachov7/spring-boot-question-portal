@@ -9,14 +9,8 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
-public class Question {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    @Setter(value = AccessLevel.PRIVATE)
-    private Long id;
+@ToString(callSuper = true, doNotUseGetters = true)
+public class Question extends BaseEntity {
 
     @Column(name = "question")
     private String questionText = "";
@@ -41,13 +35,4 @@ public class Question {
     @JoinColumn(name = "for_user", nullable = false)
     @ToString.Exclude
     private User forUser;
-
-    public Question(String questionText, String answerText, AnswerType answerType, String answerOptions, User fromUser, User forUser) {
-        this.questionText = questionText;
-        this.answerText = answerText;
-        this.answerType = answerType;
-        this.answerOptions = answerOptions;
-        this.fromUser = fromUser;
-        this.forUser = forUser;
-    }
 }

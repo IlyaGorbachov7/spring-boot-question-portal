@@ -12,12 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "password_configurer_code", schema = "questportal")
-public class PasswordConfigurerCode {
-    @Id
-    @Column(name = "id", nullable = false)
-    @Setter(value = AccessLevel.PRIVATE)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class PasswordConfigurerCode extends BaseEntity{
 
     @Column(name = "code", unique = true)
     private String code;

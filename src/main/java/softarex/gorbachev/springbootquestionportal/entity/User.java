@@ -10,13 +10,8 @@ import softarex.gorbachev.springbootquestionportal.model.Roles;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
-public class User {
-    @Id
-    @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(value = AccessLevel.PRIVATE)
-    private Long id;
+@ToString(callSuper = true, doNotUseGetters = true)
+public class User extends BaseEntity{
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -39,17 +34,5 @@ public class User {
     @Transient
     @ToString.Exclude
     private final Roles roles = Roles.USER;
-
-    public User(String password, String firstName, String lastName, String email, String phone) {
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phone = phone;
-    }
-
-    public String getUsername() {
-        return email;
-    }
 }
 

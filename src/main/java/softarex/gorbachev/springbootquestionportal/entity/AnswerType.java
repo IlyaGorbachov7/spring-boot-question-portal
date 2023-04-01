@@ -1,21 +1,14 @@
 package softarex.gorbachev.springbootquestionportal.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "answer_type", schema = "questportal")
+@AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class AnswerType {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    @Setter(value = AccessLevel.PRIVATE)
-    private Long id;
+@ToString(callSuper = true, doNotUseGetters = true)
+public class AnswerType extends BaseEntity {
 
     @Column(name = "name_type", unique = true, nullable = false)
     private String nameType;
