@@ -43,7 +43,8 @@ public class HtmlPageEmailProvider extends EmailProvider {
         mailSubject = SUBJ_DELETED;
         Context thymeleafContext = new Context();
         thymeleafContext.setVariables(Map.ofEntries(
-                Map.entry("emailTo", emailTo)));
+                Map.entry("emailTo", emailTo),
+                Map.entry("username", username)));
         htmlBody = templateEngine.process("delete-tmpl.html", thymeleafContext);
         return setParamMailMessage(emailTo);
     }

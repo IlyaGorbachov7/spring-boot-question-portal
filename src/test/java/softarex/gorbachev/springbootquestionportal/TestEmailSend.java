@@ -21,6 +21,19 @@ public class TestEmailSend {
 
     @Test
     void test1() {
-        senderProvider.sendEmailRegistration(emailTo, "skf#2323", "Ilya Gorbacvev");
+        senderProvider.sendEmailRegistration(emailTo, "@bkmz829323","Ilya Gorbacvev");
     }
+
+    @Test
+    void test2() {
+        senderProvider.sendEmailDelete(emailTo, "Ilya Gorbacvev");
+    }
+
+    @Test
+    void test3() {
+        senderProvider.sendEmailConfirmationCode(emailTo,"323fds2#3f");
+    }
+
+
+
 }
