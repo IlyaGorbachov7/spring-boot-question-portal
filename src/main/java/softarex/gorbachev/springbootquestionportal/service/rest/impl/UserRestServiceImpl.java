@@ -36,7 +36,7 @@ public class UserRestServiceImpl implements UserRestService {
             userService.findUserByEmail(email);
             throw new UserAlreadyExistsException(email);
         } catch (EmailNotFoundException ex) {
-            emailSenderProvider.sendEmailRegistration(email, registrationDto.getPassword());
+            emailSenderProvider.sendEmailRegistration(email, registrationDto.getPassword(), registrationDto.getFullUsername());
             userService.registerUser(registrationDto);
         }
         return new ResponseEntity<>(new MessageResponse(
@@ -67,7 +67,7 @@ public class UserRestServiceImpl implements UserRestService {
             userService.updateUser(updateDto, userDto);
             // If last update entity will be changed "password" or "email", then needed to create new JWT token
             ResponseEntity<MessageLoginResponse> res = login(userMapper.receiveUpdatedUserLoginDto(updateDto));
-            emailSenderProvider.sendEmailRegistration(updateDto.getEmail(), updateDto.getPassword());
+            emailSenderProvider.sendEmailRegistration(updateDto.getEmail(), updateDto.getPassword(), userDto.getFullUsername());
 
             String message = Objects.requireNonNull(res.getBody()).getMessage();
             String token = Objects.requireNonNull(res.getBody()).getToken();
@@ -80,8 +80,9 @@ public class UserRestServiceImpl implements UserRestService {
 
     @Override
     public ResponseEntity<MessageResponse> deleteSessionUser(UserPasswordDto passwordDto, UserDetailsImpl authUser) {
-        userService.deleteUserByPassword(authUser.getTarget(), passwordDto.getPassword());
-        emailSenderProvider.sendEmailDelete(authUser.getUsername());
+        UserDto userDto = authUser.getTarget();
+        userService.deleteUserByPassword(userDto, passwordDto.getPassword());
+        emailSenderProvider.sendEmailDelete(userDto.getEmail(), userDto.getFullUsername());
         return new ResponseEntity<>(new MessageResponse("User successfully deleted"), HttpStatus.IM_USED);
     }
 

@@ -21,4 +21,8 @@ public class UserRegistrationDto {
     private String lastName;
 
     private String phone;
+
+    public String getFullUsername() {
+        return firstName + " " + lastName;
+    }
 }

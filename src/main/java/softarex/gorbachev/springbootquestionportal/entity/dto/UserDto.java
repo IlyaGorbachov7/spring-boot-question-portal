@@ -23,4 +23,9 @@ public final class UserDto {
     private String phone;
 
     private Roles roles;
+
+
+    public String getFullUsername() {
+        return firstName + " " + lastName;
+    }
 }

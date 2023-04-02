@@ -11,7 +11,6 @@ import softarex.gorbachev.springbootquestionportal.exception.QuestionPortalServe
 import softarex.gorbachev.springbootquestionportal.exception.confcode.ChangeConfigurationCodeExistUserException;
 import softarex.gorbachev.springbootquestionportal.exception.confcode.ConfigurerCodeException;
 import softarex.gorbachev.springbootquestionportal.mapper.PasswordConfigurationCodeMapper;
-import softarex.gorbachev.springbootquestionportal.mapper.UserMapper;
 import softarex.gorbachev.springbootquestionportal.utils.PasswordGenerator;
 import softarex.gorbachev.springbootquestionportal.repository.PasswordConfigurerCodeRepository;
 
@@ -31,10 +30,10 @@ public class PasswordConfigurerCodeService {
     private final EntityManager entityManager;
 
     @Value("${email.expiry-datetime}")
-    private long expiryDatetime;
+    private long expiryDatetime = 5;
 
     @Value("${email.expiry-datetime.type}")
-    private String chronoUnit;
+    private String chronoUnit = "HOURS";
 
     public PasswordConfigurerCodeDto createConfigurerCode(UserDto userDto) {
         passwordConfigCodeRepository.findByUserEmail(userDto.getEmail())
