@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import softarex.gorbachev.springbootquestionportal.config.security.JWTAuthenticationFilter;
@@ -36,6 +37,8 @@ public class SecurityConfiguration implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
@@ -54,7 +57,8 @@ public class SecurityConfiguration implements UserDetailsService {
                                 .requestMatchers(HttpMethod.GET, USERS_CONTROLLER + "/").permitAll()
                                 .anyRequest().authenticated().and()
                                 .addFilterBefore(new JWTAuthenticationFilter(this, jwtTokenHelper, passwordEncoder),
-                                        UsernamePasswordAuthenticationFilter.class));
+                                        UsernamePasswordAuthenticationFilter.class))
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 
         http.csrf().disable().cors().and().headers().frameOptions().disable();
         return http.build();
