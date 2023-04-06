@@ -2,7 +2,6 @@ package softarex.gorbachev.springbootquestionportal.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,13 +12,14 @@ import softarex.gorbachev.springbootquestionportal.entity.dto.*;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageLoginResponse;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.UserRestService;
-import softarex.gorbachev.springbootquestionportal.service.rest.impl.UserRestServiceImpl;
 
+import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_LOCALHOST3000;
 import static softarex.gorbachev.springbootquestionportal.constant.requ_map.UsersRequestMappingConst.*;
 
 @Validated
 @RestController
 @RequestMapping(USERS_CONTROLLER)
+@CrossOrigin(CROSS_ORIGIN_LOCALHOST3000) // if this removed, then React don't work. Important above the controller
 @RequiredArgsConstructor
 public class UserController {
 

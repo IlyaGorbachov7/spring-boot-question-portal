@@ -18,7 +18,6 @@ import softarex.gorbachev.springbootquestionportal.utils.HtmlPageEmailProvider;
 import softarex.gorbachev.springbootquestionportal.utils.PasswordGenerator;
 
 @Configuration
-@CrossOrigin(CommonAppConstant.CROSS_ORIGIN_LOCALHOST3000)
 @PropertySource(CommonAppConstant.PROPERTY_FILE_MESSAGEEMAIL)
 public class SpringAppConfig {
 
