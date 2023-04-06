@@ -1,20 +1,18 @@
 package softarex.gorbachev.springbootquestionportal.entity.dto;
 
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Data;
+
+import static softarex.gorbachev.springbootquestionportal.constant.ValidationConstants.*;
 
 @Data
 public class UserLoginDto {
 
-    @NotNull
-    @NotEmpty
-    @Email
+    @NotBlank(message = MSG_NOT_EMPTY)
+    @Email(message = MSG_EMAIL, regexp = REGEX_EMAIL)
     private String email;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank(message = MSG_NOT_EMPTY)
     private String password;
 }
