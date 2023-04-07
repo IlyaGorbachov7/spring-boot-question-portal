@@ -3,10 +3,11 @@ package softarex.gorbachev.springbootquestionportal.constant;
 public interface ValidationConstants {
 
     String MSG_EMAIL = "Value this field  should be email\n" +
-                       "Example of valid email id\n" +
-                       "    mysite@ourearth.com</i>\n" +
-                       "    my.ownsite@ourearth.org</i>\n" +
-                       "    mysite@you.me.net</i>";
+                       "Example of valid email is\n" +
+                       "" +
+                       "\tmysite@ourearth.com\n" +
+                       "\tmy.ownsite@ourearth.org\n" +
+                       "\tmysite@you.me.net";
 
     /**
      * Example of valid email id

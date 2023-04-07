@@ -19,7 +19,8 @@ import static softarex.gorbachev.springbootquestionportal.constant.requ_map.User
 @Validated
 @RestController
 @RequestMapping(USERS_CONTROLLER)
-@CrossOrigin(CROSS_ORIGIN_LOCALHOST3000) // if this removed, then React don't work. Important above the controller
+@CrossOrigin(value = CROSS_ORIGIN_LOCALHOST3000, allowCredentials = "true")
+// if this removed, then React don't work. Important above the controller
 @RequiredArgsConstructor
 public class UserController {
 
