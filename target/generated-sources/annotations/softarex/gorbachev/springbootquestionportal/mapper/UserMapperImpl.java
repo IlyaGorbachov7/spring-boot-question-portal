@@ -11,7 +11,7 @@ import softarex.gorbachev.springbootquestionportal.entity.dto.UserUpdateDto;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-04-01T21:15:30+0300",
+    date = "2023-04-07T13:47:35+0300",
     comments = "version: 1.5.2.Final, compiler: javac, environment: Java 17.0.3 (Oracle Corporation)"
 )
 @Component
