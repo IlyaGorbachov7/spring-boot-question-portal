@@ -16,9 +16,9 @@ public abstract class PasswordConfigurationCodeMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "code", source = "configurationCode")
-    @Mapping(target = "user", source = "userDto")
+    @Mapping(target = "user", source = "user")
     @Mapping(target = "expiryDateTime", source = "dateTime")
-    public abstract PasswordConfigurerCode toPasswordConfigurerCode(UserDto userDto, String configurationCode, LocalDateTime dateTime);
+    public abstract PasswordConfigurerCode toPasswordConfigurerCode(User user, String configurationCode, LocalDateTime dateTime);
 
     public abstract PasswordConfigurerCodeDto passwordConfCodeToPasswordConfCodeDto(PasswordConfigurerCode passwordConfigurerCode);
 

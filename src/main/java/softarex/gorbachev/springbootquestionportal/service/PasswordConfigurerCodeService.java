@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import softarex.gorbachev.springbootquestionportal.entity.PasswordConfigurerCode;
+import softarex.gorbachev.springbootquestionportal.entity.User;
 import softarex.gorbachev.springbootquestionportal.entity.dto.PasswordConfigurerCodeDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserDto;
 import softarex.gorbachev.springbootquestionportal.exception.QuestionPortalServerException;
 import softarex.gorbachev.springbootquestionportal.exception.confcode.ChangeConfigurationCodeExistUserException;
 import softarex.gorbachev.springbootquestionportal.exception.confcode.ConfigurerCodeException;
@@ -35,11 +35,11 @@ public class PasswordConfigurerCodeService {
     @Value("${email.expiry-datetime.type}")
     private String chronoUnit = "HOURS";
 
-    public PasswordConfigurerCodeDto createConfigurerCode(UserDto userDto) {
-        passwordConfigCodeRepository.findByUserEmail(userDto.getEmail())
+    public PasswordConfigurerCodeDto createConfigurerCode(User user) {
+        passwordConfigCodeRepository.findByUserEmail(user.getEmail())
                 .ifPresent((configureCodeEntity) -> {
                     if (!LocalDateTime.now().isAfter(configureCodeEntity.getExpiryDateTime())) {
-                        throw new ChangeConfigurationCodeExistUserException(userDto.getEmail(), expiryDatetime, chronoUnit);
+                        throw new ChangeConfigurationCodeExistUserException(user.getEmail(), expiryDatetime, chronoUnit);
                     } else {
                         passwordConfigCodeRepository.delete(configureCodeEntity);
                         entityManager.flush();
@@ -48,7 +48,7 @@ public class PasswordConfigurerCodeService {
         PasswordConfigurerCode passwordConfigurerCode;
         try {
             String code = passwordGenerator.generate(6);
-            passwordConfigurerCode = passwordConfigCodeMapper.toPasswordConfigurerCode(userDto, code,
+            passwordConfigurerCode = passwordConfigCodeMapper.toPasswordConfigurerCode(user, code,
                     LocalDateTime.now().plus(expiryDatetime, ChronoUnit.valueOf(chronoUnit)));
             passwordConfigCodeRepository.save(passwordConfigurerCode);
         } catch (Exception e) {

@@ -79,8 +79,8 @@ public class UserService {
     }
 
     public String resetPasswordAndGenerateConfigurerCodeVerify(String email) {
-        UserDto userDto = findUserByEmail(email);
-        PasswordConfigurerCodeDto passwordConfigurerCode = configurerCodeService.createConfigurerCode(userDto);
+        PasswordConfigurerCodeDto passwordConfigurerCode = configurerCodeService
+                .createConfigurerCode(findUserEntityByEmail(email));
         return passwordConfigurerCode.getCode();
     }
 
@@ -108,6 +108,11 @@ public class UserService {
     public UserDto findUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(userMapper::userToUserDto)
+                .orElseThrow(() -> new EmailNotFoundException(email));
+    }
+
+    private User findUserEntityByEmail(String email) {
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new EmailNotFoundException(email));
     }
 
