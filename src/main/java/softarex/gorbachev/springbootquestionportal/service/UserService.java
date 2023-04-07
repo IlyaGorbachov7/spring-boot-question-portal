@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import softarex.gorbachev.springbootquestionportal.config.security.JWTTokenHelper;
+import softarex.gorbachev.springbootquestionportal.entity.PasswordConfigurerCode;
 import softarex.gorbachev.springbootquestionportal.entity.User;
 import softarex.gorbachev.springbootquestionportal.entity.dto.*;
 import softarex.gorbachev.springbootquestionportal.exception.login.EmailNotFoundException;
@@ -85,12 +86,12 @@ public class UserService {
     }
 
     public void changePassword(UserConfigurationCodeDto userConfCodeDto) {
-        PasswordConfigurerCodeDto configCodeDto = configurerCodeService
+        PasswordConfigurerCode configCode = configurerCodeService
                 .findConfigurerCodeByCodeAndUserEmail(userConfCodeDto.getCode(), userConfCodeDto.getEmail());
-        UserDto userDto = configCodeDto.getUserDto();
-        userDto.setPassword(passwordEncoder.encode(userConfCodeDto.getNewPassword()));
-        userRepository.save(userMapper.userDtoToUser(userDto)); // update password
-        configurerCodeService.deleteById(configCodeDto.getId());
+        User user = configCode.getUser();
+        user.setPassword(passwordEncoder.encode(userConfCodeDto.getNewPassword()));
+        userRepository.save(user); // update password
+        configurerCodeService.deleteById(configCode.getId());
     }
 
     public void checkUserPassword(UserDto userDto, String matchPassword) {

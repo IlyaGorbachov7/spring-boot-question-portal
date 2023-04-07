@@ -57,9 +57,8 @@ public class PasswordConfigurerCodeService {
         return passwordConfigCodeMapper.passwordConfCodeToPasswordConfCodeDto(passwordConfigurerCode);
     }
 
-    public PasswordConfigurerCodeDto findConfigurerCodeByCodeAndUserEmail(String code, String email) {
+    public PasswordConfigurerCode findConfigurerCodeByCodeAndUserEmail(String code, String email) {
         return passwordConfigCodeRepository.findByCodeAndUserEmail(code, email)
-                .map(passwordConfigCodeMapper::passwordConfCodeToPasswordConfCodeDto)
                 .orElseThrow(() -> new ConfigurerCodeException(email));
     }
 
