@@ -22,7 +22,6 @@ public class UserUpdateDto {
     @NotBlank(message = MSG_NOT_EMPTY)
     private String password;
 
-    @NotBlank(message = MSG_NOT_EMPTY)
     private String newPassword;
 
     @NotBlank(message = MSG_NOT_EMPTY)
