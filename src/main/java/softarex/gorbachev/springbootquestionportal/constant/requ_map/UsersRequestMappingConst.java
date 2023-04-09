@@ -1,17 +1,19 @@
 package softarex.gorbachev.springbootquestionportal.constant.requ_map;
 
-import softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant;
+import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.REST_MAIN_URL;
 
-public class UsersRequestMappingConst {
-    public final static  String USERS_CONTROLLER = CommonAppConstant.REST_MAIN_URL + "/users";
+public interface UsersRequestMappingConst {
+    String USERS_CONTROLLER = REST_MAIN_URL + "/users";
 
-    public final static String USERS_REGISTER = "/register";
+    String USERS_REGISTER = "/register";
 
-    public final static String USERS_LOGIN = "/login";
+    String USERS_LOGIN = "/login";
 
-    public final static String USERS_CURUSER="/cur-user";
+    String USERS_CURUSER = "/cur-user";
 
-    public final static String USERS_RESETPASSWORD="/reset-password";
+    String USERS_RESETPASSWORD = "/reset-password";
 
-    public final static String USERS_CHANGEPASSWORD="/change-password";
+    String USERS_CHANGEPASSWORD = "/change-password";
+
+    String USERS_EMAILS = "/emails";
 }

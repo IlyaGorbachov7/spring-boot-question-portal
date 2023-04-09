@@ -66,11 +66,7 @@ public class UserController {
         return userRestServiceImpl.deleteSessionUser(passwordDto, authUser);
     }
 
-    @GetMapping("/")
-    public String getMsg() {
-        return "Kello by framnd";
-    }
-
+    @GetMapping(USERS_EMAILS)
     public ResponseEntity<List<String>> receiveEmailsAbsentUsersExceptAuth(@AuthenticationPrincipal UserDetailsImpl authUser){
         return userRestServiceImpl.receiveEmailsAbsentUsersExceptAuth(authUser);
     };
