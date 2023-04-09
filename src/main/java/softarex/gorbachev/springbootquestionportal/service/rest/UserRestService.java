@@ -6,6 +6,8 @@ import softarex.gorbachev.springbootquestionportal.entity.dto.*;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageLoginResponse;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 
+import java.util.List;
+
 public interface UserRestService {
     ResponseEntity<MessageResponse> register(UserRegistrationDto registrationDto);
 
@@ -20,4 +22,6 @@ public interface UserRestService {
     ResponseEntity<MessageResponse> resetPasswordFor(UserEmailDto emailDto);
 
     ResponseEntity<MessageResponse> changePassword(UserConfigurationCodeDto configurationCodeDto);
+
+    ResponseEntity<List<String>> receiveEmailsAbsentUsersExceptAuth(UserDetailsImpl authUser);
 }

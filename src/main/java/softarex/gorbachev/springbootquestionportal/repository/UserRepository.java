@@ -15,8 +15,6 @@ public interface UserRepository extends CrudRepository<User, String> {
 
     boolean existsByEmail(String email);
 
-    Optional<User> findByEmailAndPassword(String email, String password);
-
     List<User> findAllByEmailNot(String email);
 
     @Override

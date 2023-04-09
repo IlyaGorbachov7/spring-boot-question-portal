@@ -20,6 +20,7 @@ import softarex.gorbachev.springbootquestionportal.exception.login.UserAlreadyEx
 import softarex.gorbachev.springbootquestionportal.mapper.UserMapper;
 import softarex.gorbachev.springbootquestionportal.repository.UserRepository;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -136,5 +137,10 @@ public class UserService {
 
     private boolean matchesPassword(String regularPassword, String encodedPassword) {
         return passwordEncoder.matches(regularPassword, encodedPassword);
+    }
+
+    public List<String> receiveListEmailsExceptAuth(UserDto userDto) {
+        List<User> users = userRepository.findAllByEmailNot(userDto.getEmail());
+        return users.stream().map(User::getEmail).toList();
     }
 }

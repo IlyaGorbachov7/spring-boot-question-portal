@@ -16,6 +16,7 @@ import softarex.gorbachev.springbootquestionportal.service.mdls.MessageLoginResp
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.UserService;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -99,5 +100,11 @@ public class UserRestServiceImpl implements UserRestService {
     public ResponseEntity<MessageResponse> changePassword(UserConfigurationCodeDto configurationCodeDto) {
         userService.changePassword(configurationCodeDto);
         return new ResponseEntity<>(new MessageResponse("Your password successfully changed."), HttpStatus.IM_USED);
+    }
+
+    @Override
+    public ResponseEntity<List<String>> receiveEmailsAbsentUsersExceptAuth(UserDetailsImpl authUser) {
+        UserDto userDto = authUser.getTarget();
+        return new ResponseEntity<>(userService.receiveListEmailsExceptAuth(userDto), HttpStatus.OK);
     }
 }

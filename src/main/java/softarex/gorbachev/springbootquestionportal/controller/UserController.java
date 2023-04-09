@@ -13,6 +13,8 @@ import softarex.gorbachev.springbootquestionportal.service.mdls.MessageLoginResp
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.UserRestService;
 
+import java.util.List;
+
 import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_LOCALHOST3000;
 import static softarex.gorbachev.springbootquestionportal.constant.requ_map.UsersRequestMappingConst.*;
 
@@ -69,6 +71,9 @@ public class UserController {
         return "Kello by framnd";
     }
 
+    public ResponseEntity<List<String>> receiveEmailsAbsentUsersExceptAuth(@AuthenticationPrincipal UserDetailsImpl authUser){
+        return userRestServiceImpl.receiveEmailsAbsentUsersExceptAuth(authUser);
+    };
 
 }
 
