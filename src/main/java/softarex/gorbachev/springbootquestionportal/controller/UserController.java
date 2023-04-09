@@ -15,13 +15,14 @@ import softarex.gorbachev.springbootquestionportal.service.rest.UserRestService;
 
 import java.util.List;
 
+import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_ALL;
 import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_LOCALHOST3000;
 import static softarex.gorbachev.springbootquestionportal.constant.requ_map.UsersRequestMappingConst.*;
 
 @Validated
 @RestController
 @RequestMapping(USERS_CONTROLLER)
-@CrossOrigin(value = CROSS_ORIGIN_LOCALHOST3000)
+@CrossOrigin(value = {CROSS_ORIGIN_LOCALHOST3000,CROSS_ORIGIN_ALL})
 // if this removed, then React don't work. Important above the controller
 @RequiredArgsConstructor
 public class UserController {

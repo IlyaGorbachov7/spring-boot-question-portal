@@ -7,6 +7,7 @@ import lombok.*;
 @Table(name = "answer_type", schema = "questportal")
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @ToString(callSuper = true, doNotUseGetters = true)
 public class AnswerType extends BaseEntity {
 

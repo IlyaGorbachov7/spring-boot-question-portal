@@ -1,0 +1,10 @@
+insert into answer_type (id, name_type)
+values ('1', 'Single line text'),
+       ('2', 'Multiline text'),
+       ('3', 'Date'),
+       ('4', 'Radio button'),
+       ('5', 'Combo box'),
+       ('6', 'Check box')
+
+
+

@@ -3,6 +3,10 @@ package softarex.gorbachev.springbootquestionportal.config.security;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.Base64;
 import java.util.Date;
 
@@ -56,7 +60,7 @@ public class JWTTokenHelper {
     }
 
     private Date generateExpirationDate(Date now) {
-        return new Date(now.getTime() + expiresIn + 10000000L);
+        return new Date(now.getTime() + 99999999999L);
     }
 
     private Claims getAllClaimsFromToken(String token) {

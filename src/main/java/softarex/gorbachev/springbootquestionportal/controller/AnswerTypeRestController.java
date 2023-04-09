@@ -8,12 +8,13 @@ import softarex.gorbachev.springbootquestionportal.service.rest.AnswerTypeRestSe
 
 import java.util.List;
 
+import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_ALL;
 import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_LOCALHOST3000;
 import static softarex.gorbachev.springbootquestionportal.constant.requ_map.AnswerTypeRequestMappingConst.*;
 
 @RestController
 @RequestMapping(ANSWER_TYPES_CONTROLLER)
-@CrossOrigin(value = CROSS_ORIGIN_LOCALHOST3000)
+@CrossOrigin(value = {CROSS_ORIGIN_LOCALHOST3000,CROSS_ORIGIN_ALL})
 @AllArgsConstructor
 public class AnswerTypeRestController {
 
