@@ -24,7 +24,7 @@ public class Question extends BaseEntity {
     private AnswerType answerType;
 
     @Column(name = "answer_options")
-    private String answerOptions = "";
+    private String options = "";
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_user", nullable = false)

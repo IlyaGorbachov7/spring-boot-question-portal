@@ -15,5 +15,4 @@ public class QuestionFromUserDto {
     private String options;
 
     private String emailFromUser; // relation entity
-
 }

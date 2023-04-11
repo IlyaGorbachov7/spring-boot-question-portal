@@ -110,7 +110,7 @@ public class UserService {
                 .orElseThrow(() -> new EmailNotFoundException(email));
     }
 
-    private User findUserEntityByEmail(String email) {
+    public User findUserEntityByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new EmailNotFoundException(email));
     }

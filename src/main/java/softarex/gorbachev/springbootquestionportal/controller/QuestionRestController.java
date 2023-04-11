@@ -8,6 +8,7 @@ import softarex.gorbachev.springbootquestionportal.config.security.UserDetailsIm
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionForUserDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionFromUserDto;
+import softarex.gorbachev.springbootquestionportal.service.mdls.MessageCreatedQuestResponse;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.QuestionsRestService;
 
@@ -23,11 +24,11 @@ import static softarex.gorbachev.springbootquestionportal.constant.requ_map.Ques
 @AllArgsConstructor
 public class QuestionRestController {
 
-    private QuestionsRestService questionRestService;
+    private final QuestionsRestService questionRestService;
 
     @PostMapping(QUESTIONS) // должен возвращаться id вопроса !!!
-    public ResponseEntity<MessageResponse> create(@RequestBody QuestionForUserDto questionDto,
-                                                  @AuthenticationPrincipal UserDetailsImpl auth) { // question from-me
+    public ResponseEntity<MessageCreatedQuestResponse> create(@RequestBody QuestionForUserDto questionDto,
+                                                              @AuthenticationPrincipal UserDetailsImpl auth) { // question from-me
         return questionRestService.create(questionDto, auth);
     }
 
