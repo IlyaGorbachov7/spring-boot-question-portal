@@ -25,7 +25,7 @@ import static softarex.gorbachev.springbootquestionportal.constant.requ_map.User
 @CrossOrigin(value = {CROSS_ORIGIN_LOCALHOST3000,CROSS_ORIGIN_ALL})
 // if this removed, then React don't work. Important above the controller
 @RequiredArgsConstructor
-public class UserController {
+public class UserRestController {
 
     private final UserRestService userRestServiceImpl;
 

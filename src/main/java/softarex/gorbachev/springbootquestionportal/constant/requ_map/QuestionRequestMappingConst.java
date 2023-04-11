@@ -6,9 +6,13 @@ public interface QuestionRequestMappingConst {
 
     String QUESTIONS_CONTROLLER = REST_MAIN_URL + "/questions";
 
+    String QUESTIONS = "/";
+
     String QUESTIONS_FROM_ME = "/from-me";
 
     String QUESTIONS_FROM_ME_QUANTITY = QUESTIONS_FROM_ME + "/quantity";
+
+    String QUESTIONS_ID_PV = QUESTIONS + "{id}";
 
     String QUESTIONS_FOR_ME = "/for-me";
 
