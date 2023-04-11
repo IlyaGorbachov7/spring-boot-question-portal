@@ -77,7 +77,8 @@ public class UserService {
 
     public void deleteUserByPassword(UserDto userDto, String password) {
         checkUserPassword(userDto, password);
-        userRepository.delete(userMapper.userDtoToUser(userDto));
+        User user = findUserEntityByEmail(userDto.getEmail());
+        userRepository.delete(user);
     }
 
     public String resetPasswordAndGenerateConfigurerCodeVerify(String email) {

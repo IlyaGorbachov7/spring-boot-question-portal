@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import softarex.gorbachev.springbootquestionportal.config.security.Roles;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "users", schema = "questportal")
 @NoArgsConstructor
@@ -33,5 +36,8 @@ public class User extends BaseEntity{
     @Transient
     @ToString.Exclude
     private final Roles roles = Roles.USER;
+
+    @OneToMany(mappedBy = "fromUser",fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.DETACH})
+    private List<Question> questions = new ArrayList<>();
 }
 
