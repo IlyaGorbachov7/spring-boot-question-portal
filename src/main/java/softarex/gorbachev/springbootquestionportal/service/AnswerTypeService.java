@@ -1,6 +1,7 @@
 package softarex.gorbachev.springbootquestionportal.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import softarex.gorbachev.springbootquestionportal.entity.AnswerType;
 import softarex.gorbachev.springbootquestionportal.entity.dto.AnswerTypeDto;
@@ -19,7 +20,8 @@ public class AnswerTypeService {
     private AnswerTypeMapper answerMapper;
 
     public List<AnswerTypeDto> getAllAnswerType() {
-        return answerMapper.answerTypesToDto(answerRepository.findAll());
+        return answerMapper.answerTypesToDto(answerRepository
+                .findAll(Sort.sort(AnswerType.class).by(AnswerType::getId)));
     }
 
     public AnswerTypeDto getAnswerTypeById(String id) {

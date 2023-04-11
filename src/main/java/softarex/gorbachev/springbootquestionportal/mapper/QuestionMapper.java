@@ -3,6 +3,7 @@ package softarex.gorbachev.springbootquestionportal.mapper;
 import lombok.AllArgsConstructor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import softarex.gorbachev.springbootquestionportal.entity.AnswerType;
 import softarex.gorbachev.springbootquestionportal.entity.Question;
@@ -47,5 +48,17 @@ public abstract class QuestionMapper {
     public abstract QuestionDto questForUserDtoToQuestDto(QuestionForUserDto quest, String emailFromUser);
 
     public abstract QuestionDto questFromUserDtoToQuestDto(QuestionFromUserDto quest, String emailForUser);
+
+    public void updateQuestion(Question entity, QuestionDto questDto) {
+        Question resource = assembleEntity(
+                userService.findUserEntityByEmail(questDto.getEmailFromUser()),
+                userService.findUserEntityByEmail(questDto.getEmailForUser()),
+                answerTypeService.getAnswerTypeEntityByName(questDto.getAnswerType()),
+                questDto
+        );
+        update(entity, resource);
+    }
+
+    abstract void update(@MappingTarget Question target, Question resource);
 
 }
