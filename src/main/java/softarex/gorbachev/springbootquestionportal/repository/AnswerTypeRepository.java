@@ -1,11 +1,15 @@
 package softarex.gorbachev.springbootquestionportal.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
 import softarex.gorbachev.springbootquestionportal.entity.AnswerType;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface AnswerTypeRepository extends CrudRepository<AnswerType, String> {
+public interface AnswerTypeRepository extends JpaRepository<AnswerType, String> {
     @Override
-    List<AnswerType> findAll();
+    List<AnswerType> findAll(Sort sort);
+
+    Optional<AnswerType> findByNameType(String nameType);
 }

@@ -11,4 +11,6 @@ public interface AnswerTypeRestService {
     ResponseEntity<List<AnswerTypeDto>> getAllAnswerType();
 
     ResponseEntity<AnswerTypeDto> getAnswerTypeById(String id);
+
+    ResponseEntity<AnswerTypeDto> getAnswerTypeByName(AnswerTypeDto answerTypeDto);
 }

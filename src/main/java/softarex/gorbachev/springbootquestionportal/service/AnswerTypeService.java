@@ -28,8 +28,19 @@ public class AnswerTypeService {
                 .orElseThrow(AnswerTypeNotFoundException::new);
     }
 
+    public AnswerTypeDto getAnswerTypeByName(AnswerTypeDto answerTypeDto) {
+        return answerRepository.findByNameType(answerTypeDto.getNameType())
+                .map(answerMapper::answerToAnswerDto)
+                .orElseThrow(AnswerTypeNotFoundException::new);
+    }
+
     public AnswerType getAnswerTypeEntityById(String id) {
         return answerRepository.findById(id)
+                .orElseThrow(AnswerTypeNotFoundException::new);
+    }
+
+    public AnswerType getAnswerTypeEntityByName(String nameType) {
+        return answerRepository.findByNameType(nameType)
                 .orElseThrow(AnswerTypeNotFoundException::new);
     }
 }

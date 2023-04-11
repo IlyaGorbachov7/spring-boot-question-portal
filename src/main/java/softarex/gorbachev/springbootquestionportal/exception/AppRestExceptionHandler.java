@@ -1,4 +1,4 @@
-package softarex.gorbachev.springbootquestionportal.controller;
+package softarex.gorbachev.springbootquestionportal.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;

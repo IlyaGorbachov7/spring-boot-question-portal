@@ -24,4 +24,10 @@ public class AnswerTypeRestServiceImpl implements AnswerTypeRestService {
     public ResponseEntity<AnswerTypeDto> getAnswerTypeById(String id) {
         return new ResponseEntity<>(answerTypeService.getAnswerTypeById(id), HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<AnswerTypeDto> getAnswerTypeByName(AnswerTypeDto answerTypeDto) {
+        return new ResponseEntity<>(answerTypeService.getAnswerTypeByName(answerTypeDto),HttpStatus.OK);
+    }
+
 }
