@@ -49,12 +49,12 @@ public class QuestionRestController {
         return questionRestService.answerQuestion(questionFromUserDto, auth);
     }
 
-    @GetMapping(QUESTIONS_FROM_ME)
+    @GetMapping(QUESTIONS_FROM_ME_ALL)
     public ResponseEntity<List<QuestionDto>> receiveALLQuestionsFromUser(@AuthenticationPrincipal UserDetailsImpl auth) {
         return questionRestService.getALLQuestionsFromUser(auth);
     }
 
-    @GetMapping(QUESTIONS_FOR_ME)
+    @GetMapping(QUESTIONS_FOR_ME_ALL)
     public ResponseEntity<List<QuestionDto>> receiveALLQuestionsForUser(@AuthenticationPrincipal UserDetailsImpl auth) {
         return questionRestService.getALLQuestionsForUser(auth);
     }

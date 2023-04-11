@@ -61,7 +61,10 @@ public class UserService {
 
     public void updateUser(UserUpdateDto updateDto, UserDto userDto) {
         if (!updateDto.getEmail().equals(userDto.getEmail())) {
-            findUserEntityByEmail(updateDto.getEmail());
+            userRepository.findByEmail(updateDto.getEmail())
+                    .ifPresent((user) -> {
+                        throw new UserAlreadyExistsException(user.getEmail());
+                    });
         }
         userMapper.updateUserDtoFromUpdateDto(userDto, updateDto);
         if (Objects.equals(userDto.getPassword(), updateDto.getNewPassword())) {

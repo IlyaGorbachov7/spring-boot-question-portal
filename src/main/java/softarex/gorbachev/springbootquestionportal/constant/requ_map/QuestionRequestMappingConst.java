@@ -10,11 +10,15 @@ public interface QuestionRequestMappingConst {
 
     String QUESTIONS_FROM_ME = "/from-me";
 
+    String QUESTIONS_FROM_ME_ALL = QUESTIONS_FROM_ME + "/all";
+
     String QUESTIONS_FROM_ME_QUANTITY = QUESTIONS_FROM_ME + "/quantity";
 
     String QUESTIONS_ID_PV = QUESTIONS + "{id}";
 
     String QUESTIONS_FOR_ME = "/for-me";
+
+    String QUESTIONS_FOR_ME_ALL = QUESTIONS_FOR_ME + "/all";
 
     String QUESTIONS_FOR_ME_QUANTITY = QUESTIONS_FOR_ME + "/quantity";
 
