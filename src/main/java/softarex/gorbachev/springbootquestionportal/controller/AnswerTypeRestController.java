@@ -30,8 +30,4 @@ public class AnswerTypeRestController {
         return answerTypeRestService.getAnswerTypeById(id);
     }
 
-    @GetMapping(ANSWER_TYPES)
-    public ResponseEntity<AnswerTypeDto> getAnswerTypeByName(@RequestBody AnswerTypeDto answerTypeDto){
-        return answerTypeRestService.getAnswerTypeByName(answerTypeDto);
-    }
 }
