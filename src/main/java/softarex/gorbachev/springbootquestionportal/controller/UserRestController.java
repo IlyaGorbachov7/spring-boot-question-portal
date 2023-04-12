@@ -1,9 +1,13 @@
 package softarex.gorbachev.springbootquestionportal.controller;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +28,10 @@ import static softarex.gorbachev.springbootquestionportal.constant.requ_map.User
 @RequestMapping(USERS_CONTROLLER)
 @CrossOrigin(value = {CROSS_ORIGIN_LOCALHOST3000,CROSS_ORIGIN_ALL})
 // if this removed, then React don't work. Important above the controller
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserRestController {
+
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     private final UserRestService userRestServiceImpl;
 
@@ -71,6 +77,12 @@ public class UserRestController {
     public ResponseEntity<List<String>> receiveEmailsAbsentUsersExceptAuth(@AuthenticationPrincipal UserDetailsImpl authUser){
         return userRestServiceImpl.receiveEmailsAbsentUsersExceptAuth(authUser);
     };
+
+
+    @MessageMapping("/private/update") // /app/private/update -- frontend sent to backend
+    public void update(@Payload String email){
+        simpMessagingTemplate.convertAndSendToUser(email,"/update", email);
+    }
 
 }
 
