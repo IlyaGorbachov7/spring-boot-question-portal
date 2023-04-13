@@ -26,7 +26,7 @@ public class AnswerTypeRestController {
     }
 
     @GetMapping(ANSWER_TYPES_PATHVARIABLE_ID)
-    public ResponseEntity<AnswerTypeDto> getAnswerTypeById(@PathVariable String id) {
+    public ResponseEntity<AnswerTypeDto> getAnswerTypeById(@PathVariable Integer id) {
         return answerTypeRestService.getAnswerTypeById(id);
     }
 

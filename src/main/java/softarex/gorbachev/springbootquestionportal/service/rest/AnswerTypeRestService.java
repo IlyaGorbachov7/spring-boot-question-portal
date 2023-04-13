@@ -10,7 +10,7 @@ public interface AnswerTypeRestService {
 
     ResponseEntity<List<AnswerTypeDto>> getAllAnswerType();
 
-    ResponseEntity<AnswerTypeDto> getAnswerTypeById(String id);
+    ResponseEntity<AnswerTypeDto> getAnswerTypeById(Integer id);
 
     ResponseEntity<AnswerTypeDto> getAnswerTypeByName(AnswerTypeDto answerTypeDto);
 }

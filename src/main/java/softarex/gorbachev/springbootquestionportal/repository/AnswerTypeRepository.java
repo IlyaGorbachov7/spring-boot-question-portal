@@ -6,9 +6,8 @@ import softarex.gorbachev.springbootquestionportal.entity.AnswerType;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-public interface AnswerTypeRepository extends JpaRepository<AnswerType, UUID> {
+public interface AnswerTypeRepository extends JpaRepository<AnswerType, Integer> {
     @Override
     List<AnswerType> findAll(Sort sort);
 

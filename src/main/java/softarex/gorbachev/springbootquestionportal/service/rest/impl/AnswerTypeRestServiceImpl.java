@@ -21,7 +21,7 @@ public class AnswerTypeRestServiceImpl implements AnswerTypeRestService {
     }
 
     @Override
-    public ResponseEntity<AnswerTypeDto> getAnswerTypeById(String id) {
+    public ResponseEntity<AnswerTypeDto> getAnswerTypeById(Integer id) {
         return new ResponseEntity<>(answerTypeService.getAnswerTypeById(id), HttpStatus.OK);
     }
 
