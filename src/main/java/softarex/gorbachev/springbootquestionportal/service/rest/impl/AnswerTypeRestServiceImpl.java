@@ -9,6 +9,7 @@ import softarex.gorbachev.springbootquestionportal.service.rest.AnswerTypeRestSe
 import softarex.gorbachev.springbootquestionportal.service.AnswerTypeService;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -21,7 +22,7 @@ public class AnswerTypeRestServiceImpl implements AnswerTypeRestService {
     }
 
     @Override
-    public ResponseEntity<AnswerTypeDto> getAnswerTypeById(Integer id) {
+    public ResponseEntity<AnswerTypeDto> getAnswerTypeById(UUID id) {
         return new ResponseEntity<>(answerTypeService.getAnswerTypeById(id), HttpStatus.OK);
     }
 

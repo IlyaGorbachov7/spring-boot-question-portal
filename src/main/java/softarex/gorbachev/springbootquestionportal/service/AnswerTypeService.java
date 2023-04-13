@@ -10,6 +10,7 @@ import softarex.gorbachev.springbootquestionportal.mapper.AnswerTypeMapper;
 import softarex.gorbachev.springbootquestionportal.repository.AnswerTypeRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -24,7 +25,7 @@ public class AnswerTypeService {
                 .findAll(Sort.sort(AnswerType.class).by(AnswerType::getId)));
     }
 
-    public AnswerTypeDto getAnswerTypeById(Integer id) {
+    public AnswerTypeDto getAnswerTypeById(UUID id) {
         return answerRepository.findById(id)
                 .map(answerMapper::answerToAnswerDto)
                 .orElseThrow(AnswerTypeNotFoundException::new);

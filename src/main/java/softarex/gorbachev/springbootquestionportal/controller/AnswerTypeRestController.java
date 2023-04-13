@@ -7,6 +7,7 @@ import softarex.gorbachev.springbootquestionportal.entity.dto.AnswerTypeDto;
 import softarex.gorbachev.springbootquestionportal.service.rest.AnswerTypeRestService;
 
 import java.util.List;
+import java.util.UUID;
 
 import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_ALL;
 import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_LOCALHOST3000;
@@ -26,7 +27,7 @@ public class AnswerTypeRestController {
     }
 
     @GetMapping(ANSWER_TYPES_PATHVARIABLE_ID)
-    public ResponseEntity<AnswerTypeDto> getAnswerTypeById(@PathVariable Integer id) {
+    public ResponseEntity<AnswerTypeDto> getAnswerTypeById(@PathVariable UUID id) {
         return answerTypeRestService.getAnswerTypeById(id);
     }
 
