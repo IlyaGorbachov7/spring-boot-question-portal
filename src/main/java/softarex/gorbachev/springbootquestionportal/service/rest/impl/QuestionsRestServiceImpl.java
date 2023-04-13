@@ -15,6 +15,7 @@ import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.QuestionsRestService;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -26,7 +27,7 @@ public class QuestionsRestServiceImpl implements QuestionsRestService {
     @Override
     public ResponseEntity<MessageCreatedQuestResponse> create(QuestionForUserDto questionDto, UserDetailsImpl fromUserAuth) {
         return new ResponseEntity<>(new MessageCreatedQuestResponse("Question is successfully created.",
-                questionsService.create(questionDto, fromUserAuth.getTarget())), HttpStatus.OK);
+                questionsService.create(questionDto, fromUserAuth.getTarget()).toString()), HttpStatus.OK);
     }
 
     @Override
@@ -43,7 +44,7 @@ public class QuestionsRestServiceImpl implements QuestionsRestService {
     }
 
     @Override
-    public ResponseEntity<MessageResponse> delete(String id) {
+    public ResponseEntity<MessageResponse> delete(UUID id) {
         questionsService.delete(id);
         return new ResponseEntity<>(new MessageResponse("Question is successfully deleted."),
                 HttpStatus.OK);

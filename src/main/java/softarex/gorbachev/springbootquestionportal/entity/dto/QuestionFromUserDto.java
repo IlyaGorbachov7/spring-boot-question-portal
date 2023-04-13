@@ -2,9 +2,11 @@ package softarex.gorbachev.springbootquestionportal.entity.dto;
 
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class QuestionFromUserDto {
-    private String id;
+    private UUID id;
 
     private String questionText;
 

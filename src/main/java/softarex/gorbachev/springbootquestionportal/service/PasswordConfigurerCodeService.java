@@ -16,6 +16,7 @@ import softarex.gorbachev.springbootquestionportal.repository.PasswordConfigurer
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +63,7 @@ public class PasswordConfigurerCodeService {
                 .orElseThrow(() -> new ConfigurerCodeException(email));
     }
 
-    public void deleteById(String id) {
+    public void deleteById(UUID id) {
         passwordConfigCodeRepository.deleteById(id);
     }
 }

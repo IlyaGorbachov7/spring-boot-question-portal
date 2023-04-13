@@ -13,6 +13,7 @@ import softarex.gorbachev.springbootquestionportal.mapper.QuestionMapper;
 import softarex.gorbachev.springbootquestionportal.repository.QuestionsRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -24,7 +25,7 @@ public class QuestionsService {
 
     private final UserService userService;
 
-    public String create(QuestionForUserDto questForDto, UserDto fromUserDto) {
+    public UUID create(QuestionForUserDto questForDto, UserDto fromUserDto) {
         Question question = questionMapper
                 .questDtoToQuestion(questionMapper
                         .questForUserDtoToQuestDto(questForDto, fromUserDto.getEmail()));
@@ -32,7 +33,7 @@ public class QuestionsService {
         return question.getId();
     }
 
-    public void delete(String id) {
+    public void delete(UUID id) {
         Question question = findById(id);
         questionRepository.delete(question);
     }
@@ -80,8 +81,8 @@ public class QuestionsService {
                 .findUserEntityByEmail(userDto.getEmail()));
     }
 
-    private Question findById(String id) {
+    private Question findById(UUID id) {
         return questionRepository.findById(id)
-                .orElseThrow(() -> new QuestionNotFounded(id));
+                .orElseThrow(() -> new QuestionNotFounded(id.toString()));
     }
 }

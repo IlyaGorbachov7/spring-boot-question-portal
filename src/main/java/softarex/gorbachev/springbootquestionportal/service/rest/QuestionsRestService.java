@@ -9,6 +9,7 @@ import softarex.gorbachev.springbootquestionportal.service.mdls.MessageCreatedQu
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface QuestionsRestService {
 
@@ -19,7 +20,7 @@ public interface QuestionsRestService {
 
     ResponseEntity<MessageResponse> answerQuestion(QuestionFromUserDto questionFromUserDto, UserDetailsImpl forUserAuth);
 
-    ResponseEntity<MessageResponse> delete(String id);
+    ResponseEntity<MessageResponse> delete(UUID id);
 
     ResponseEntity<List<QuestionDto>> getLimitedNumberQuestionsFromUser(Integer page, Integer limit, UserDetailsImpl auth);
 

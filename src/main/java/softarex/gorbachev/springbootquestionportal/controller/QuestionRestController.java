@@ -13,6 +13,7 @@ import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.QuestionsRestService;
 
 import java.util.List;
+import java.util.UUID;
 
 import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_ALL;
 import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_LOCALHOST3000;
@@ -39,7 +40,7 @@ public class QuestionRestController {
     }
 
     @DeleteMapping(value = QUESTIONS_ID_PV)
-    public ResponseEntity<MessageResponse> delete(@PathVariable String id) {
+    public ResponseEntity<MessageResponse> delete(@PathVariable UUID id) {
         return questionRestService.delete(id);
     }
 

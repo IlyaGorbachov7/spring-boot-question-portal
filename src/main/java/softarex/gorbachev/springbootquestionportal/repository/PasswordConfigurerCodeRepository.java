@@ -4,11 +4,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 import softarex.gorbachev.springbootquestionportal.entity.PasswordConfigurerCode;
-import softarex.gorbachev.springbootquestionportal.entity.User;
 
 import java.util.Optional;
+import java.util.UUID;
 
-public interface PasswordConfigurerCodeRepository extends CrudRepository<PasswordConfigurerCode, String> {
+public interface PasswordConfigurerCodeRepository extends CrudRepository<PasswordConfigurerCode, UUID> {
     @Transactional
     @Override
     void delete(PasswordConfigurerCode entity);
