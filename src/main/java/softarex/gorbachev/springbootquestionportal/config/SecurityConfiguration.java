@@ -55,8 +55,8 @@ public class SecurityConfiguration implements UserDetailsService {
                                         (USERS_CONTROLLER + USERS_RESETPASSWORD)).permitAll()
                                 .requestMatchers(HttpMethod.PUT, USERS_CONTROLLER + "/").permitAll() // on the update user
                                 .requestMatchers(HttpMethod.GET, USERS_CONTROLLER + "/").permitAll()
+                                // very imported: needed for first handshake sockets and server, and other request will be authenticated
                                 .requestMatchers("/ws", "/ws/**").permitAll()
-                                .requestMatchers("/topic/**", "/app/**").permitAll()
                                 .anyRequest().authenticated().and()
                                 .addFilterBefore(new JWTAuthenticationFilter(this, jwtTokenHelper, passwordEncoder),
                                         UsernamePasswordAuthenticationFilter.class))
