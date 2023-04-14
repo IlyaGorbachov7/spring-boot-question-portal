@@ -2,6 +2,7 @@ package softarex.gorbachev.springbootquestionportal.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import softarex.gorbachev.springbootquestionportal.entity.Question;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionDto;
@@ -25,11 +26,14 @@ public class QuestionsService {
 
     private final UserService userService;
 
+    private final SimpMessagingTemplate simpMessTemp;
+
     public UUID create(QuestionForUserDto questForDto, UserDto fromUserDto) {
         Question question = questionMapper
                 .questDtoToQuestion(questionMapper
                         .questForUserDtoToQuestDto(questForDto, fromUserDto.getEmail()));
         questionRepository.save(question);
+        simpMessTemp.convertAndSend("/topic/user/" + questForDto.getEmailForUser(), fromUserDto.getEmail());
         return question.getId();
     }
 
