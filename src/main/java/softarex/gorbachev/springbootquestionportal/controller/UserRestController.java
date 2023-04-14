@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +14,7 @@ import softarex.gorbachev.springbootquestionportal.entity.dto.*;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageLoginResponse;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.UserRestService;
+import softarex.gorbachev.springbootquestionportal.utils.aop.ann.AfterSendTo;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ import static softarex.gorbachev.springbootquestionportal.constant.requ_map.User
 @Validated
 @RestController
 @RequestMapping(USERS_CONTROLLER)
-@CrossOrigin(value = {CROSS_ORIGIN_LOCALHOST3000,CROSS_ORIGIN_ALL})
+@CrossOrigin(value = {CROSS_ORIGIN_LOCALHOST3000, CROSS_ORIGIN_ALL})
 // if this removed, then React don't work. Important above the controller
 @AllArgsConstructor
 public class UserRestController {
@@ -36,8 +35,9 @@ public class UserRestController {
     private final UserRestService userRestServiceImpl;
 
     @PostMapping(USERS_REGISTER)
+    @AfterSendTo(way = "/public/users/crud")
     public ResponseEntity<MessageResponse> registration(@RequestBody @Valid UserRegistrationDto registrationDto) {
-        return userRestServiceImpl.register(registrationDto);
+         return userRestServiceImpl.register(registrationDto);
     }
 
     @PostMapping(USERS_LOGIN)
@@ -62,30 +62,21 @@ public class UserRestController {
     }
 
     @PutMapping(USERS_CURUSER)
+    @AfterSendTo(way = "/public/users/crud")
     public ResponseEntity<MessageLoginResponse> updateSessionUser(@RequestBody @Valid UserUpdateDto updateDto,
                                                                   @AuthenticationPrincipal UserDetailsImpl authUser) {
         return userRestServiceImpl.updateSessionUser(updateDto, authUser);
     }
 
     @DeleteMapping(USERS_CURUSER)
+    @AfterSendTo(way = "/public/users/crud")
     public ResponseEntity<MessageResponse> deleteSessionUser(@RequestBody @Valid UserPasswordDto passwordDto,
                                                              @AuthenticationPrincipal UserDetailsImpl authUser) {
         return userRestServiceImpl.deleteSessionUser(passwordDto, authUser);
     }
 
     @GetMapping(USERS_EMAILS)
-    public ResponseEntity<List<String>> receiveEmailsAbsentUsersExceptAuth(@AuthenticationPrincipal UserDetailsImpl authUser){
+    public ResponseEntity<List<String>> receiveEmailsAbsentUsersExceptAuth(@AuthenticationPrincipal UserDetailsImpl authUser) {
         return userRestServiceImpl.receiveEmailsAbsentUsersExceptAuth(authUser);
-    };
-
-
-    @MessageMapping("/private/update") // /app/private/update -- frontend sent to backend
-    public void update(@Payload String email){
-        simpMessagingTemplate.convertAndSendToUser(email,"/update", email);
     }
-
 }
-
-
-
-

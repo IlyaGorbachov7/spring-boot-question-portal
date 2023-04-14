@@ -26,14 +26,11 @@ public class QuestionsService {
 
     private final UserService userService;
 
-    private final SimpMessagingTemplate simpMessTemp;
-
     public UUID create(QuestionForUserDto questForDto, UserDto fromUserDto) {
         Question question = questionMapper
                 .questDtoToQuestion(questionMapper
                         .questForUserDtoToQuestDto(questForDto, fromUserDto.getEmail()));
         questionRepository.save(question);
-        simpMessTemp.convertAndSend("/topic/user/" + questForDto.getEmailForUser(), fromUserDto.getEmail());
         return question.getId();
     }
 

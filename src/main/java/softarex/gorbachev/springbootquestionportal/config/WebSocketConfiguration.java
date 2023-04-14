@@ -42,9 +42,9 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry messageBrokerRegistry) {
-        messageBrokerRegistry.setApplicationDestinationPrefixes("/app");
-        messageBrokerRegistry.enableSimpleBroker("/topic", "/user");
-        messageBrokerRegistry.setUserDestinationPrefix("/user");
+        messageBrokerRegistry.setApplicationDestinationPrefixes("/quest-portal");
+        messageBrokerRegistry.enableSimpleBroker("/public", "/private");
+        messageBrokerRegistry.setUserDestinationPrefix("/private");
     }
 
     /**
