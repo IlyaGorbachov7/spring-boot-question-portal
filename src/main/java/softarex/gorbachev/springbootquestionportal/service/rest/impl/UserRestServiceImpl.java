@@ -60,7 +60,7 @@ public class UserRestServiceImpl implements UserRestService {
 
     @Override
     public ResponseEntity<MessageLoginResponse> updateSessionUser(UserUpdateDto updateDto, UserDetailsImpl authUser) {
-        UserDto userDto = authUser.getTarget();
+        UserDto userDto = userMapper.clone(authUser.getTarget());
         // check correct entered current user password
         userService.checkUserPassword(userDto, updateDto.getPassword());
 

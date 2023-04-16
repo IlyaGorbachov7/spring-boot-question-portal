@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import softarex.gorbachev.springbootquestionportal.config.security.JWTTokenHelper;
 import softarex.gorbachev.springbootquestionportal.entity.PasswordConfigurerCode;
+import softarex.gorbachev.springbootquestionportal.entity.Question;
 import softarex.gorbachev.springbootquestionportal.entity.User;
 import softarex.gorbachev.springbootquestionportal.entity.dto.*;
 import softarex.gorbachev.springbootquestionportal.exception.login.EmailNotFoundException;
@@ -18,6 +19,7 @@ import softarex.gorbachev.springbootquestionportal.exception.login.InvalidedUser
 import softarex.gorbachev.springbootquestionportal.exception.login.LoginException;
 import softarex.gorbachev.springbootquestionportal.exception.login.UserAlreadyExistsException;
 import softarex.gorbachev.springbootquestionportal.mapper.UserMapper;
+import softarex.gorbachev.springbootquestionportal.repository.QuestionsRepository;
 import softarex.gorbachev.springbootquestionportal.repository.UserRepository;
 
 import java.util.List;
@@ -28,6 +30,8 @@ import java.util.Objects;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    private final QuestionsRepository questionsRepository;
 
     private final UserMapper userMapper;
 
@@ -77,6 +81,10 @@ public class UserService {
 
     public void deleteUserByPassword(UserDto userDto, String password) {
         checkUserPassword(userDto, password);
+
+        List<Question> listQuestion = questionsRepository.findAllByForUser(findUserEntityByEmail(userDto.getEmail()));
+        listQuestion.forEach(quest -> quest.setForUser(null));
+
         User user = findUserEntityByEmail(userDto.getEmail());
         userRepository.delete(user);
     }

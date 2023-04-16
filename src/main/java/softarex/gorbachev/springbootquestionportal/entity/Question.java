@@ -32,7 +32,7 @@ public class Question extends BaseEntity {
     private User fromUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "for_user", nullable = false)
+    @JoinColumn(name = "for_user", nullable = true)
     @ToString.Exclude
     private User forUser;
 }
