@@ -12,7 +12,7 @@ import softarex.gorbachev.springbootquestionportal.entity.dto.UserUpdateDto;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-04-14T20:32:08+0300",
+    date = "2023-04-16T20:13:16+0300",
     comments = "version: 1.5.2.Final, compiler: javac, environment: Java 17.0.3 (Oracle Corporation)"
 )
 @Component
@@ -57,6 +57,25 @@ public class UserMapperImpl extends UserMapper {
         user.setPhone( userDto.getPhone() );
 
         return user;
+    }
+
+    @Override
+    public UserDto clone(UserDto userDto) {
+        if ( userDto == null ) {
+            return null;
+        }
+
+        UserDto userDto1 = new UserDto();
+
+        userDto1.setId( userDto.getId() );
+        userDto1.setPassword( userDto.getPassword() );
+        userDto1.setFirstName( userDto.getFirstName() );
+        userDto1.setLastName( userDto.getLastName() );
+        userDto1.setEmail( userDto.getEmail() );
+        userDto1.setPhone( userDto.getPhone() );
+        userDto1.setRoles( userDto.getRoles() );
+
+        return userDto1;
     }
 
     @Override

@@ -5,15 +5,19 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import softarex.gorbachev.springbootquestionportal.config.security.UserDetailsImpl;
 import softarex.gorbachev.springbootquestionportal.entity.dto.*;
+import softarex.gorbachev.springbootquestionportal.service.mdls.EmailFromForResponse;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageLoginResponse;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.UserRestService;
+import softarex.gorbachev.springbootquestionportal.utils.aop.ann.AfterSendSubscribersTo;
 import softarex.gorbachev.springbootquestionportal.utils.aop.ann.AfterSendTo;
 
 import java.util.List;
@@ -37,7 +41,7 @@ public class UserRestController {
     @PostMapping(USERS_REGISTER)
     @AfterSendTo(way = "/public/users/crud")
     public ResponseEntity<MessageResponse> registration(@RequestBody @Valid UserRegistrationDto registrationDto) {
-         return userRestServiceImpl.register(registrationDto);
+        return userRestServiceImpl.register(registrationDto);
     }
 
     @PostMapping(USERS_LOGIN)
@@ -63,6 +67,7 @@ public class UserRestController {
 
     @PutMapping(USERS_CURUSER)
     @AfterSendTo(way = "/public/users/crud")
+    @AfterSendSubscribersTo(way = "/private/user/{from-email}", pathUnique = "from-email")
     public ResponseEntity<MessageLoginResponse> updateSessionUser(@RequestBody @Valid UserUpdateDto updateDto,
                                                                   @AuthenticationPrincipal UserDetailsImpl authUser) {
         return userRestServiceImpl.updateSessionUser(updateDto, authUser);
@@ -70,6 +75,7 @@ public class UserRestController {
 
     @DeleteMapping(USERS_CURUSER)
     @AfterSendTo(way = "/public/users/crud")
+    @AfterSendSubscribersTo(way = "/private/user/{from-email}", pathUnique = "from-email")
     public ResponseEntity<MessageResponse> deleteSessionUser(@RequestBody @Valid UserPasswordDto passwordDto,
                                                              @AuthenticationPrincipal UserDetailsImpl authUser) {
         return userRestServiceImpl.deleteSessionUser(passwordDto, authUser);
@@ -78,5 +84,10 @@ public class UserRestController {
     @GetMapping(USERS_EMAILS)
     public ResponseEntity<List<String>> receiveEmailsAbsentUsersExceptAuth(@AuthenticationPrincipal UserDetailsImpl authUser) {
         return userRestServiceImpl.receiveEmailsAbsentUsersExceptAuth(authUser);
+    }
+
+    @MessageMapping("/private/user/subscribe-me")
+    public void subscribeOnUser(@Payload EmailFromForResponse emailFromForResponse) {
+        simpMessagingTemplate.convertAndSend(String.format("private/%s/subscribe-me",emailFromForResponse.getForEmail()), emailFromForResponse);
     }
 }

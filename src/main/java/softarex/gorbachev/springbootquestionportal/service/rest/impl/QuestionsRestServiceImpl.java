@@ -86,4 +86,9 @@ public class QuestionsRestServiceImpl implements QuestionsRestService {
         return new ResponseEntity<>(questionsService.getQuantityQuestionForUser(auth.getTarget()),
                 HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Long> getQuantityQuestionFromToForUser(UserDetailsImpl fromAuth, String forEmail) {
+        return new ResponseEntity<>(questionsService.getQuantityQuestionFromToForUser(fromAuth.getTarget(), forEmail),HttpStatus.OK);
+    }
 }

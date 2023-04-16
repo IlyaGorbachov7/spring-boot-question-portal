@@ -33,4 +33,6 @@ public interface QuestionsRestService {
     ResponseEntity<Long> getQuantityQuestionFromUser(UserDetailsImpl auth);
 
     ResponseEntity<Long> getQuantityQuestionForUser(UserDetailsImpl auth);
+
+    ResponseEntity<Long> getQuantityQuestionFromToForUser(UserDetailsImpl fromAuth, String forEmail);
 }

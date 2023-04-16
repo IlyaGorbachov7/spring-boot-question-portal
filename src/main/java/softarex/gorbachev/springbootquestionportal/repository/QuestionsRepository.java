@@ -22,5 +22,6 @@ public interface QuestionsRepository extends CrudRepository<Question, UUID> {
 
     Long countByForUser(User forUser);
 
+    Long countByFromUserAndForUserEmail(User fromUser, String forEmail);
 
 }

@@ -92,8 +92,14 @@ public class QuestionRestController {
         return questionRestService.getQuantityQuestionForUser(auth);
     }
 
+    @GetMapping(QUESTIONS_FROM_ME+"/{for-email}/quantity")
+    public ResponseEntity<Long> receiveQuantityQuestionFromToForUser(@PathVariable("for-email") String forEmail,
+                                                                      @AuthenticationPrincipal UserDetailsImpl fromAuth){
+        return questionRestService.getQuantityQuestionFromToForUser(fromAuth, forEmail);
+    }
+
     @MessageMapping("/private/questions/crud")
-    public void crudUserQuestions(@Payload UserEmailDto userDto) {
-        simpMessagingTemplate.convertAndSend(String.format("/private/%s/question/crud", userDto.getEmail()), userDto.getEmail());
+    public void crudUserQuestions(@Payload UserEmailDto forUserDto) {
+        simpMessagingTemplate.convertAndSend(String.format("/private/%s/question/crud", forUserDto.getEmail()), forUserDto.getEmail());
     }
 }

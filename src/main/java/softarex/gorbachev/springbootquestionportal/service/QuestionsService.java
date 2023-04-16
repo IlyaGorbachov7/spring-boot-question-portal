@@ -2,7 +2,6 @@ package softarex.gorbachev.springbootquestionportal.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import softarex.gorbachev.springbootquestionportal.entity.Question;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionDto;
@@ -72,6 +71,11 @@ public class QuestionsService {
                 .findAllByForUser(userService.findUserEntityByEmail(userDto.getEmail())));
     }
 
+    public List<Question> getALLQuestionsEntityForUser(UserDto userDto) {
+        return questionRepository.findAllByForUser(userService
+                .findUserEntityByEmail(userDto.getEmail()));
+    }
+
     public Long getQuantityQuestionFromUser(UserDto userDto) {
         return questionRepository.countByFromUser(userService
                 .findUserEntityByEmail(userDto.getEmail()));
@@ -80,6 +84,11 @@ public class QuestionsService {
     public Long getQuantityQuestionForUser(UserDto userDto) {
         return questionRepository.countByForUser(userService
                 .findUserEntityByEmail(userDto.getEmail()));
+    }
+
+    public Long getQuantityQuestionFromToForUser(UserDto fromUser, String forEmail) {
+        return questionRepository.countByFromUserAndForUserEmail(userService
+                .findUserEntityByEmail(fromUser.getEmail()), forEmail);
     }
 
     private Question findById(UUID id) {
