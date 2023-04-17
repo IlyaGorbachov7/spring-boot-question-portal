@@ -3,6 +3,7 @@ package softarex.gorbachev.springbootquestionportal.service.rest.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import softarex.gorbachev.springbootquestionportal.config.security.UserDetailsImpl;
@@ -15,6 +16,7 @@ import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.QuestionsRestService;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -26,7 +28,7 @@ public class QuestionsRestServiceImpl implements QuestionsRestService {
     @Override
     public ResponseEntity<MessageCreatedQuestResponse> create(QuestionForUserDto questionDto, UserDetailsImpl fromUserAuth) {
         return new ResponseEntity<>(new MessageCreatedQuestResponse("Question is successfully created.",
-                questionsService.create(questionDto, fromUserAuth.getTarget())), HttpStatus.OK);
+                questionsService.create(questionDto, fromUserAuth.getTarget()).toString()), HttpStatus.OK);
     }
 
     @Override
@@ -43,7 +45,7 @@ public class QuestionsRestServiceImpl implements QuestionsRestService {
     }
 
     @Override
-    public ResponseEntity<MessageResponse> delete(String id) {
+    public ResponseEntity<MessageResponse> delete(UUID id) {
         questionsService.delete(id);
         return new ResponseEntity<>(new MessageResponse("Question is successfully deleted."),
                 HttpStatus.OK);
@@ -83,5 +85,10 @@ public class QuestionsRestServiceImpl implements QuestionsRestService {
     public ResponseEntity<Long> getQuantityQuestionForUser(UserDetailsImpl auth) {
         return new ResponseEntity<>(questionsService.getQuantityQuestionForUser(auth.getTarget()),
                 HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Long> getQuantityQuestionFromToForUser(UserDetailsImpl fromAuth, String forEmail) {
+        return new ResponseEntity<>(questionsService.getQuantityQuestionFromToForUser(fromAuth.getTarget(), forEmail),HttpStatus.OK);
     }
 }

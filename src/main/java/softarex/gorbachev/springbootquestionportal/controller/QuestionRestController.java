@@ -2,21 +2,28 @@ package softarex.gorbachev.springbootquestionportal.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import softarex.gorbachev.springbootquestionportal.config.security.UserDetailsImpl;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionForUserDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionFromUserDto;
+import softarex.gorbachev.springbootquestionportal.entity.dto.UserEmailDto;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageCreatedQuestResponse;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.QuestionsRestService;
 
 import java.util.List;
+import java.util.UUID;
 
 import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_ALL;
 import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_LOCALHOST3000;
 import static softarex.gorbachev.springbootquestionportal.constant.requ_map.QuestionRequestMappingConst.*;
+import static softarex.gorbachev.springbootquestionportal.constant.requ_map.WebSocketReqRespMappingConst.PRV_EMAIL_QUEST_CRUD;
+import static softarex.gorbachev.springbootquestionportal.constant.requ_map.WebSocketReqRespMappingConst.PRV_QUEST_CRUD;
 
 @RestController
 @RequestMapping(QUESTIONS_CONTROLLER)
@@ -26,7 +33,9 @@ public class QuestionRestController {
 
     private final QuestionsRestService questionRestService;
 
-    @PostMapping(QUESTIONS) // должен возвращаться id вопроса !!!
+    private final SimpMessagingTemplate simpMessagingTemplate;
+
+    @PostMapping(QUESTIONS)
     public ResponseEntity<MessageCreatedQuestResponse> create(@RequestBody QuestionForUserDto questionDto,
                                                               @AuthenticationPrincipal UserDetailsImpl auth) { // question from-me
         return questionRestService.create(questionDto, auth);
@@ -39,7 +48,7 @@ public class QuestionRestController {
     }
 
     @DeleteMapping(value = QUESTIONS_ID_PV)
-    public ResponseEntity<MessageResponse> delete(@PathVariable String id) {
+    public ResponseEntity<MessageResponse> delete(@PathVariable UUID id) {
         return questionRestService.delete(id);
     }
 
@@ -67,11 +76,11 @@ public class QuestionRestController {
     }
 
 
-    @GetMapping(value= QUESTIONS_FOR_ME)
+    @GetMapping(value = QUESTIONS_FOR_ME)
     public ResponseEntity<List<QuestionDto>> receiveLimitedNumberQuestionsForUser(@RequestParam Integer page,
                                                                                   @RequestParam Integer limit,
-                                                                                  @AuthenticationPrincipal UserDetailsImpl auth){
-        return questionRestService.getLimitedNumberQuestionsForUser(page,limit,auth);
+                                                                                  @AuthenticationPrincipal UserDetailsImpl auth) {
+        return questionRestService.getLimitedNumberQuestionsForUser(page, limit, auth);
     }
 
     @GetMapping((QUESTIONS_FROM_ME_QUANTITY))
@@ -85,4 +94,14 @@ public class QuestionRestController {
         return questionRestService.getQuantityQuestionForUser(auth);
     }
 
+    @GetMapping(QUESTIONS_FROM_ME_PVFOREMAIL_QUANTITY)
+    public ResponseEntity<Long> receiveQuantityQuestionFromToForUser(@PathVariable(PV_FOREMAIL) String forEmail,
+                                                                      @AuthenticationPrincipal UserDetailsImpl fromAuth){
+        return questionRestService.getQuantityQuestionFromToForUser(fromAuth, forEmail);
+    }
+
+    @MessageMapping(PRV_QUEST_CRUD)
+    public void crudUserQuestions(@Payload UserEmailDto forUserDto) {
+        simpMessagingTemplate.convertAndSend(String.format(PRV_EMAIL_QUEST_CRUD, forUserDto.getEmail()), forUserDto.getEmail());
+    }
 }

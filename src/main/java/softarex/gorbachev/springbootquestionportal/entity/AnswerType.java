@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Data
 @ToString(callSuper = true, doNotUseGetters = true)
-public class AnswerType extends BaseEntity {
+public class AnswerType extends BaseEntity{
 
     @Column(name = "name_type", unique = true, nullable = false)
     private String nameType;

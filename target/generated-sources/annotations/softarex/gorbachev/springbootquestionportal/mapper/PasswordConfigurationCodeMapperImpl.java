@@ -1,6 +1,7 @@
 package softarex.gorbachev.springbootquestionportal.mapper;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 import softarex.gorbachev.springbootquestionportal.entity.PasswordConfigurerCode;
@@ -9,7 +10,7 @@ import softarex.gorbachev.springbootquestionportal.entity.dto.PasswordConfigurer
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-04-11T19:20:26+0300",
+    date = "2023-04-17T01:07:32+0300",
     comments = "version: 1.5.2.Final, compiler: javac, environment: Java 17.0.3 (Oracle Corporation)"
 )
 @Component
@@ -38,7 +39,9 @@ public class PasswordConfigurationCodeMapperImpl extends PasswordConfigurationCo
 
         PasswordConfigurerCodeDto passwordConfigurerCodeDto = new PasswordConfigurerCodeDto();
 
-        passwordConfigurerCodeDto.setId( passwordConfigurerCode.getId() );
+        if ( passwordConfigurerCode.getId() != null ) {
+            passwordConfigurerCodeDto.setId( passwordConfigurerCode.getId().toString() );
+        }
         passwordConfigurerCodeDto.setCode( passwordConfigurerCode.getCode() );
         passwordConfigurerCodeDto.setExpiryDateTime( passwordConfigurerCode.getExpiryDateTime() );
 
@@ -53,7 +56,9 @@ public class PasswordConfigurationCodeMapperImpl extends PasswordConfigurationCo
 
         PasswordConfigurerCode passwordConfigurerCode = new PasswordConfigurerCode();
 
-        passwordConfigurerCode.setId( passwordConfigurerCodeDto.getId() );
+        if ( passwordConfigurerCodeDto.getId() != null ) {
+            passwordConfigurerCode.setId( UUID.fromString( passwordConfigurerCodeDto.getId() ) );
+        }
         passwordConfigurerCode.setCode( passwordConfigurerCodeDto.getCode() );
         passwordConfigurerCode.setExpiryDateTime( passwordConfigurerCodeDto.getExpiryDateTime() );
 

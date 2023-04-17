@@ -1,5 +1,6 @@
 package softarex.gorbachev.springbootquestionportal.mapper;
 
+import java.util.UUID;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 import softarex.gorbachev.springbootquestionportal.entity.User;
@@ -11,7 +12,7 @@ import softarex.gorbachev.springbootquestionportal.entity.dto.UserUpdateDto;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-04-11T19:20:27+0300",
+    date = "2023-04-17T01:07:31+0300",
     comments = "version: 1.5.2.Final, compiler: javac, environment: Java 17.0.3 (Oracle Corporation)"
 )
 @Component
@@ -25,7 +26,9 @@ public class UserMapperImpl extends UserMapper {
 
         UserDto userDto = new UserDto();
 
-        userDto.setId( user.getId() );
+        if ( user.getId() != null ) {
+            userDto.setId( user.getId().toString() );
+        }
         userDto.setPassword( user.getPassword() );
         userDto.setFirstName( user.getFirstName() );
         userDto.setLastName( user.getLastName() );
@@ -44,7 +47,9 @@ public class UserMapperImpl extends UserMapper {
 
         User user = new User();
 
-        user.setId( userDto.getId() );
+        if ( userDto.getId() != null ) {
+            user.setId( UUID.fromString( userDto.getId() ) );
+        }
         user.setPassword( userDto.getPassword() );
         user.setFirstName( userDto.getFirstName() );
         user.setLastName( userDto.getLastName() );
@@ -52,6 +57,25 @@ public class UserMapperImpl extends UserMapper {
         user.setPhone( userDto.getPhone() );
 
         return user;
+    }
+
+    @Override
+    public UserDto clone(UserDto userDto) {
+        if ( userDto == null ) {
+            return null;
+        }
+
+        UserDto userDto1 = new UserDto();
+
+        userDto1.setId( userDto.getId() );
+        userDto1.setPassword( userDto.getPassword() );
+        userDto1.setFirstName( userDto.getFirstName() );
+        userDto1.setLastName( userDto.getLastName() );
+        userDto1.setEmail( userDto.getEmail() );
+        userDto1.setPhone( userDto.getPhone() );
+        userDto1.setRoles( userDto.getRoles() );
+
+        return userDto1;
     }
 
     @Override

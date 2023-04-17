@@ -14,6 +14,10 @@ public interface QuestionRequestMappingConst {
 
     String QUESTIONS_FROM_ME_QUANTITY = QUESTIONS_FROM_ME + "/quantity";
 
+    String PV_FOREMAIL = "for-email";
+
+    String QUESTIONS_FROM_ME_PVFOREMAIL_QUANTITY = QUESTIONS_FROM_ME + "/{" + PV_FOREMAIL + "}/quantity";
+
     String QUESTIONS_ID_PV = QUESTIONS + "{id}";
 
     String QUESTIONS_FOR_ME = "/for-me";

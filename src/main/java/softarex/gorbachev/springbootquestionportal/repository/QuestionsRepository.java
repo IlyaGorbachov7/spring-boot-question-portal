@@ -6,8 +6,9 @@ import softarex.gorbachev.springbootquestionportal.entity.Question;
 import softarex.gorbachev.springbootquestionportal.entity.User;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface QuestionsRepository extends CrudRepository<Question, String> {
+public interface QuestionsRepository extends CrudRepository<Question, UUID> {
 
     List<Question> findAllByFromUser(User fromUser);
 
@@ -21,5 +22,6 @@ public interface QuestionsRepository extends CrudRepository<Question, String> {
 
     Long countByForUser(User forUser);
 
+    Long countByFromUserAndForUserEmail(User fromUser, String forEmail);
 
 }

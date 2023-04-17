@@ -7,9 +7,10 @@ import softarex.gorbachev.springbootquestionportal.entity.User;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, String> {
+public interface UserRepository extends CrudRepository<User, UUID> {
 
     Optional<User> findByEmail(String email);
 

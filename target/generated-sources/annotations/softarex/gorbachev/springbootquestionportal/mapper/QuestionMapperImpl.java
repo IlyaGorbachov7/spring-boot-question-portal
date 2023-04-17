@@ -2,6 +2,7 @@ package softarex.gorbachev.springbootquestionportal.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 import softarex.gorbachev.springbootquestionportal.entity.AnswerType;
@@ -13,7 +14,7 @@ import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionFromUserDt
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-04-11T19:20:27+0300",
+    date = "2023-04-17T01:07:31+0300",
     comments = "version: 1.5.2.Final, compiler: javac, environment: Java 17.0.3 (Oracle Corporation)"
 )
 @Component
@@ -30,7 +31,9 @@ public class QuestionMapperImpl extends QuestionMapper {
         questionDto.setAnswerType( questionAnswerTypeNameType( question ) );
         questionDto.setEmailFromUser( questionFromUserEmail( question ) );
         questionDto.setEmailForUser( questionForUserEmail( question ) );
-        questionDto.setId( question.getId() );
+        if ( question.getId() != null ) {
+            questionDto.setId( question.getId().toString() );
+        }
         questionDto.setQuestionText( question.getQuestionText() );
         questionDto.setAnswerText( question.getAnswerText() );
         questionDto.setOptions( question.getOptions() );
@@ -61,7 +64,9 @@ public class QuestionMapperImpl extends QuestionMapper {
         Question question = new Question();
 
         if ( questDto != null ) {
-            question.setId( questDto.getId() );
+            if ( questDto.getId() != null ) {
+                question.setId( UUID.fromString( questDto.getId() ) );
+            }
             question.setQuestionText( questDto.getQuestionText() );
             question.setAnswerText( questDto.getAnswerText() );
             question.setOptions( questDto.getOptions() );
@@ -82,7 +87,9 @@ public class QuestionMapperImpl extends QuestionMapper {
         QuestionDto questionDto = new QuestionDto();
 
         if ( quest != null ) {
-            questionDto.setId( quest.getId() );
+            if ( quest.getId() != null ) {
+                questionDto.setId( quest.getId().toString() );
+            }
             questionDto.setQuestionText( quest.getQuestionText() );
             questionDto.setAnswerText( quest.getAnswerText() );
             questionDto.setAnswerType( quest.getAnswerType() );
@@ -103,7 +110,9 @@ public class QuestionMapperImpl extends QuestionMapper {
         QuestionDto questionDto = new QuestionDto();
 
         if ( quest != null ) {
-            questionDto.setId( quest.getId() );
+            if ( quest.getId() != null ) {
+                questionDto.setId( quest.getId().toString() );
+            }
             questionDto.setQuestionText( quest.getQuestionText() );
             questionDto.setAnswerText( quest.getAnswerText() );
             questionDto.setAnswerType( quest.getAnswerType() );

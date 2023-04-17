@@ -17,6 +17,8 @@ public abstract class UserMapper {
 
     public abstract User userDtoToUser(UserDto userDto);
 
+    public abstract UserDto clone(UserDto userDto);
+
     @Mapping(target = "id", ignore = true)
     public abstract User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto);
 

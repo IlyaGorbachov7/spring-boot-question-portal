@@ -154,6 +154,13 @@ public class JWTTokenHelper {
         return null;
     }
 
+    public String getToken(String tokenB) {
+        if (tokenB.startsWith("Bearer ")) {
+            return tokenB.substring(7);
+        }
+        return null;
+    }
+
     public String getAuthHeaderFromHeader(HttpServletRequest request) {
         return request.getHeader("Authorization");
     }
