@@ -1,13 +1,17 @@
 package softarex.gorbachev.springbootquestionportal.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import softarex.gorbachev.springbootquestionportal.config.security.UserDetailsImpl;
+import softarex.gorbachev.springbootquestionportal.constant.valid.OnCreate;
+import softarex.gorbachev.springbootquestionportal.constant.valid.OnUpdate;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionForUserDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionFromUserDto;
@@ -28,6 +32,7 @@ import static softarex.gorbachev.springbootquestionportal.constant.requ_map.WebS
 @RestController
 @RequestMapping(QUESTIONS_CONTROLLER)
 @CrossOrigin(value = {CROSS_ORIGIN_LOCALHOST3000, CROSS_ORIGIN_ALL})
+@Validated
 @AllArgsConstructor
 public class QuestionRestController {
 
@@ -36,13 +41,15 @@ public class QuestionRestController {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @PostMapping(QUESTIONS)
-    public ResponseEntity<MessageCreatedQuestResponse> create(@RequestBody QuestionForUserDto questionDto,
+    @Validated(OnCreate.class)
+    public ResponseEntity<MessageCreatedQuestResponse> create(@RequestBody @Valid QuestionForUserDto questionDto,
                                                               @AuthenticationPrincipal UserDetailsImpl auth) { // question from-me
         return questionRestService.create(questionDto, auth);
     }
 
     @PutMapping(value = QUESTIONS)
-    public ResponseEntity<MessageResponse> update(@RequestBody QuestionForUserDto questionForUserDto,
+    @Validated(OnUpdate.class)
+    public ResponseEntity<MessageResponse> update(@RequestBody @Valid QuestionForUserDto questionForUserDto,
                                                   @AuthenticationPrincipal UserDetailsImpl auth) { // question from-me
         return questionRestService.update(questionForUserDto, auth);
     }
@@ -53,7 +60,8 @@ public class QuestionRestController {
     }
 
     @PatchMapping(value = QUESTIONS)
-    public ResponseEntity<MessageResponse> answerTheQuestion(@RequestBody QuestionFromUserDto questionFromUserDto,
+    @Validated(OnUpdate.class)
+    public ResponseEntity<MessageResponse> answerTheQuestion(@RequestBody @Valid QuestionFromUserDto questionFromUserDto,
                                                              @AuthenticationPrincipal UserDetailsImpl auth) {// question for-me
         return questionRestService.answerQuestion(questionFromUserDto, auth);
     }
