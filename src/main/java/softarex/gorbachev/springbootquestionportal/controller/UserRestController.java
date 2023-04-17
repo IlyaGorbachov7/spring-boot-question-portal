@@ -88,6 +88,11 @@ public class UserRestController {
 
     @MessageMapping("/private/user/subscribe-me")
     public void subscribeOnUser(@Payload EmailFromForResponse emailFromForResponse) {
-        simpMessagingTemplate.convertAndSend(String.format("private/%s/subscribe-me",emailFromForResponse.getForEmail()), emailFromForResponse);
+        simpMessagingTemplate.convertAndSend(String.format("/private/%s/subscribe-me", emailFromForResponse.getForEmail()), emailFromForResponse);
+    }
+
+    @MessageMapping("/private/user/unsubscribe-me")
+    public void unsubscribeOnUser(@Payload EmailFromForResponse emailFromForResponse) {
+        simpMessagingTemplate.convertAndSend(String.format("/private/%s/unsubscribe-me", emailFromForResponse.getForEmail()), emailFromForResponse);
     }
 }

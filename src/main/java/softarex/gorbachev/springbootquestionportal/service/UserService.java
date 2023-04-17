@@ -84,7 +84,10 @@ public class UserService {
 
         List<Question> listQuestion = questionsRepository.findAllByForUser(findUserEntityByEmail(userDto.getEmail()));
         // when will be commit transaction, then Hibernate automatically update records in DB, therefore, you do not need to explicitly delete
-        listQuestion.forEach(quest -> quest.setForUser(null));
+        listQuestion.forEach(quest -> {
+            quest.setForUser(null);
+            quest.setAnswerText("");
+        });
 
         User user = findUserEntityByEmail(userDto.getEmail());
         userRepository.delete(user);

@@ -16,7 +16,7 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
-          <factory-entry name="spring-boot-question-portal" />
+          <factory-entry name="spring-boot-question-portal" value="556af18b-fdab-41b6-a26a-5ab64eb40163" />
         </datasource-mapping>
         <naming-strategy-map />
       </configuration>
