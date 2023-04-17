@@ -18,10 +18,10 @@ public class QuestionFromUserDto {
     private UUID id;
 
     @NotBlank(message = MSG_NOT_EMPTY)
-    @Max(value = MAX_SIZE_QUESTTEXT, message = MSG_MAX_SIZE_QUESTTEXT)
+    @Size(max = MAX_SIZE_QUESTTEXT, message = MSG_MAX_SIZE_QUESTTEXT)
     private String questionText;
 
-    @Max(value = MAX_SIZE_ANSWERTEXT, message = MSG_MAX_SIZE_ANSWERTEXT)
+    @Size(max = MAX_SIZE_ANSWERTEXT, message = MSG_MAX_SIZE_ANSWERTEXT)
     @NotBlank(message = MSG_NOT_EMPTY)
     private String answerText;
 

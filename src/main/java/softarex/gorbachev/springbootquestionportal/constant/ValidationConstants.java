@@ -32,11 +32,11 @@ public interface ValidationConstants {
 
     String MSG_NOT_BLANK = "Fields don't should be blank";
 
-    long MAX_SIZE_QUESTTEXT = 250L;
+    int MAX_SIZE_QUESTTEXT = 250;
 
     String MSG_MAX_SIZE_QUESTTEXT = "Max length question text should be " + MAX_SIZE_QUESTTEXT;
 
-    long MAX_SIZE_ANSWERTEXT = 250;
+    int MAX_SIZE_ANSWERTEXT = 250;
 
     String MSG_MAX_SIZE_ANSWERTEXT = "Max length answer text should be " + MAX_SIZE_QUESTTEXT;
 
