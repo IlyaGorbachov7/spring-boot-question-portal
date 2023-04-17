@@ -9,7 +9,7 @@ import softarex.gorbachev.springbootquestionportal.entity.dto.AnswerTypeDto;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-04-17T11:46:38+0300",
+    date = "2023-04-17T14:50:48+0300",
     comments = "version: 1.5.2.Final, compiler: javac, environment: Java 17.0.3 (Oracle Corporation)"
 )
 @Component
