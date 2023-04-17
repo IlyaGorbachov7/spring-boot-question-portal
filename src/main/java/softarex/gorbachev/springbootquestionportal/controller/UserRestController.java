@@ -25,6 +25,7 @@ import java.util.List;
 import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_ALL;
 import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_LOCALHOST3000;
 import static softarex.gorbachev.springbootquestionportal.constant.requ_map.UsersRequestMappingConst.*;
+import static softarex.gorbachev.springbootquestionportal.constant.requ_map.WebSocketReqRespMappingConst.*;
 
 @Validated
 @RestController
@@ -39,7 +40,7 @@ public class UserRestController {
     private final UserRestService userRestServiceImpl;
 
     @PostMapping(USERS_REGISTER)
-    @AfterSendTo(way = "/public/users/crud")
+    @AfterSendTo(way = PUB_USER_CRUD)
     public ResponseEntity<MessageResponse> registration(@RequestBody @Valid UserRegistrationDto registrationDto) {
         return userRestServiceImpl.register(registrationDto);
     }
@@ -66,16 +67,16 @@ public class UserRestController {
     }
 
     @PutMapping(USERS_CURUSER)
-    @AfterSendTo(way = "/public/users/crud")
-    @AfterSendSubscribersTo(way = "/private/user/{from-email}", pathUnique = "from-email")
+    @AfterSendTo(way = PUB_USER_CRUD)
+    @AfterSendSubscribersTo(way = PRV_USER_FROMEMAIL, pathUnique = FROMEMAIL)
     public ResponseEntity<MessageLoginResponse> updateSessionUser(@RequestBody @Valid UserUpdateDto updateDto,
                                                                   @AuthenticationPrincipal UserDetailsImpl authUser) {
         return userRestServiceImpl.updateSessionUser(updateDto, authUser);
     }
 
     @DeleteMapping(USERS_CURUSER)
-    @AfterSendTo(way = "/public/users/crud")
-    @AfterSendSubscribersTo(way = "/private/user/{from-email}", pathUnique = "from-email")
+    @AfterSendTo(way = PUB_USER_CRUD)
+    @AfterSendSubscribersTo(way = PRV_USER_FROMEMAIL, pathUnique = FROMEMAIL)
     public ResponseEntity<MessageResponse> deleteSessionUser(@RequestBody @Valid UserPasswordDto passwordDto,
                                                              @AuthenticationPrincipal UserDetailsImpl authUser) {
         return userRestServiceImpl.deleteSessionUser(passwordDto, authUser);
@@ -86,13 +87,15 @@ public class UserRestController {
         return userRestServiceImpl.receiveEmailsAbsentUsersExceptAuth(authUser);
     }
 
-    @MessageMapping("/private/user/subscribe-me")
+    @MessageMapping(PRV_USER_SUBSCRIBEME)
     public void subscribeOnUser(@Payload EmailFromForResponse emailFromForResponse) {
-        simpMessagingTemplate.convertAndSend(String.format("/private/%s/subscribe-me", emailFromForResponse.getForEmail()), emailFromForResponse);
+        simpMessagingTemplate.convertAndSend(String.format(PRV_FOREMAIL_SUBSCRIBEME, emailFromForResponse.getForEmail()),
+                emailFromForResponse);
     }
 
-    @MessageMapping("/private/user/unsubscribe-me")
+    @MessageMapping(PRV_USER_UNSUBSCRIBEME)
     public void unsubscribeOnUser(@Payload EmailFromForResponse emailFromForResponse) {
-        simpMessagingTemplate.convertAndSend(String.format("/private/%s/unsubscribe-me", emailFromForResponse.getForEmail()), emailFromForResponse);
+        simpMessagingTemplate.convertAndSend(String.format(PRV_FOREMAIL_UNSUBSCRIBEME, emailFromForResponse.getForEmail()),
+                emailFromForResponse);
     }
 }
