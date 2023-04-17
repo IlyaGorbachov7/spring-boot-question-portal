@@ -1,6 +1,7 @@
 package softarex.gorbachev.springbootquestionportal.config;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -15,15 +16,15 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import softarex.gorbachev.springbootquestionportal.config.security.JWTTokenHelper;
 
+import java.util.Arrays;
 import java.util.Objects;
 
-import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_LOCALHOST3000;
+import static softarex.gorbachev.springbootquestionportal.constant.requ_map.WebSocketReqRespMappingConst.*;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -35,16 +36,19 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
     private JWTTokenHelper jwtTokenHelper;
 
+    @Value("${websocket.crossorigin}")
+    private String[] websocketCrossOrigin;
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOrigins(CROSS_ORIGIN_LOCALHOST3000).withSockJS();
+        registry.addEndpoint(ENDPOINT_HANDSHAKE).setAllowedOrigins(websocketCrossOrigin).withSockJS();
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry messageBrokerRegistry) {
-        messageBrokerRegistry.setApplicationDestinationPrefixes("/quest-portal");
-        messageBrokerRegistry.enableSimpleBroker("/public", "/private");
-        messageBrokerRegistry.setUserDestinationPrefix("/private");
+        messageBrokerRegistry.setApplicationDestinationPrefixes(APP_DES_PREFIX);
+        messageBrokerRegistry.enableSimpleBroker(SIM_BROKER_PUBLIC, SIM_BROKER_PRIVATE);
+        messageBrokerRegistry.setUserDestinationPrefix(SIM_BROKER_PRIVATE);
     }
 
     /**

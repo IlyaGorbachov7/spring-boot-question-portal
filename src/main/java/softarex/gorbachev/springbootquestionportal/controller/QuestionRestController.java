@@ -22,6 +22,8 @@ import java.util.UUID;
 import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_ALL;
 import static softarex.gorbachev.springbootquestionportal.constant.CommonAppConstant.CROSS_ORIGIN_LOCALHOST3000;
 import static softarex.gorbachev.springbootquestionportal.constant.requ_map.QuestionRequestMappingConst.*;
+import static softarex.gorbachev.springbootquestionportal.constant.requ_map.WebSocketReqRespMappingConst.PRV_EMAIL_QUEST_CRUD;
+import static softarex.gorbachev.springbootquestionportal.constant.requ_map.WebSocketReqRespMappingConst.PRV_QUEST_CRUD;
 
 @RestController
 @RequestMapping(QUESTIONS_CONTROLLER)
@@ -33,7 +35,7 @@ public class QuestionRestController {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    @PostMapping(QUESTIONS) // должен возвращаться id вопроса !!!
+    @PostMapping(QUESTIONS)
     public ResponseEntity<MessageCreatedQuestResponse> create(@RequestBody QuestionForUserDto questionDto,
                                                               @AuthenticationPrincipal UserDetailsImpl auth) { // question from-me
         return questionRestService.create(questionDto, auth);
@@ -92,14 +94,14 @@ public class QuestionRestController {
         return questionRestService.getQuantityQuestionForUser(auth);
     }
 
-    @GetMapping(QUESTIONS_FROM_ME+"/{for-email}/quantity")
-    public ResponseEntity<Long> receiveQuantityQuestionFromToForUser(@PathVariable("for-email") String forEmail,
+    @GetMapping(QUESTIONS_FROM_ME_PVFOREMAIL_QUANTITY)
+    public ResponseEntity<Long> receiveQuantityQuestionFromToForUser(@PathVariable(PV_FOREMAIL) String forEmail,
                                                                       @AuthenticationPrincipal UserDetailsImpl fromAuth){
         return questionRestService.getQuantityQuestionFromToForUser(fromAuth, forEmail);
     }
 
-    @MessageMapping("/private/questions/crud")
+    @MessageMapping(PRV_QUEST_CRUD)
     public void crudUserQuestions(@Payload UserEmailDto forUserDto) {
-        simpMessagingTemplate.convertAndSend(String.format("/private/%s/question/crud", forUserDto.getEmail()), forUserDto.getEmail());
+        simpMessagingTemplate.convertAndSend(String.format(PRV_EMAIL_QUEST_CRUD, forUserDto.getEmail()), forUserDto.getEmail());
     }
 }
