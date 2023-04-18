@@ -40,4 +40,25 @@ public interface ValidationConstants {
 
     String MSG_MAX_SIZE_ANSWERTEXT = "Max length answer text should be " + MAX_SIZE_QUESTTEXT;
 
+    String REGEX_NAME = "(^([A-ZА-ЯЁ][a-zа-яё]{2,}))$";
+
+    String MSG_FIRSTNAME = "First name must consist of one word.\n" +
+                           "Start with  one uppercase. Remove the extra spaces.";
+
+    int MAX_SIZE_FIRSTNAME = 20;
+
+    String MSG_SIZE_FIRSTNAME = "Max length password must be " + MAX_SIZE_FIRSTNAME;
+
+    String MSG_LASTNAME = "Last name must consist of one word.\n" +
+                          "Start with  one uppercase. Remove the extra spaces.";
+
+
+    int MAX_SIZE_LASTNAME = 20;
+
+    String MSG_SIZE_LASTNAME = "Max length password must be " + MAX_SIZE_LASTNAME;
+
+    int MAX_SIZE_PASSWORD = 20;
+
+    String MSG_SIZE_PASSWORD = "Max length password must be " + MAX_SIZE_PASSWORD;
+
 }
