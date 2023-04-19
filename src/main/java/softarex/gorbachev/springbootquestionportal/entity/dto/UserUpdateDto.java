@@ -33,5 +33,6 @@ public class UserUpdateDto {
     private String lastName;
 
     @NotBlank(message = MSG_NOT_EMPTY)
+    @Size(max = MAX_SIZE_PHONE, message = MSG_SIZE_PHONE)
     private String phone;
 }

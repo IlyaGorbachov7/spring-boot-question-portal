@@ -61,4 +61,8 @@ public interface ValidationConstants {
 
     String MSG_SIZE_PASSWORD = "Max length password must be " + MAX_SIZE_PASSWORD;
 
+    int MAX_SIZE_PHONE = 20;
+
+    String MSG_SIZE_PHONE = "Max length password must be "+ MAX_SIZE_PHONE;
+
 }

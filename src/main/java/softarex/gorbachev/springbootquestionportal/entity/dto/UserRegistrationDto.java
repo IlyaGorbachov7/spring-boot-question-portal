@@ -27,6 +27,7 @@ public class UserRegistrationDto {
     private String lastName;
 
     @NotBlank(message = MSG_NOT_BLANK)
+    @Size(max = MAX_SIZE_PHONE, message = MSG_SIZE_PHONE)
     private String phone;
 
     public String getFullUsername() {
