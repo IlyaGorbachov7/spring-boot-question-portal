@@ -61,7 +61,8 @@ public class QuestionsService {
 
     public void answerQuestion(QuestionFromUserDto questionFromUserDto, UserDto forUserDto) {
         Question question = findById(questionFromUserDto.getId());
-        if (question.getForUser().getEmail().equals(forUserDto.getEmail())) {
+        if (question.getForUser().getEmail().equals(forUserDto.getEmail()) &&
+            question.getFromUser().getEmail().equals(questionFromUserDto.getEmailFromUser())) {
             questionMapper.updateQuestion(question, questionMapper
                     .questFromUserDtoToQuestDto(questionFromUserDto, forUserDto.getEmail()));
         } else {
