@@ -9,6 +9,9 @@ import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionForUserDto
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionFromUserDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.UserDto;
 import softarex.gorbachev.springbootquestionportal.exception.quest.QuestionNotFounded;
+import softarex.gorbachev.springbootquestionportal.exception.quest.UserCanNotAddQuestionException;
+import softarex.gorbachev.springbootquestionportal.exception.quest.UserCanNotChangeQuestionException;
+import softarex.gorbachev.springbootquestionportal.exception.quest.UserCanNotDeleteQuestionException;
 import softarex.gorbachev.springbootquestionportal.mapper.QuestionMapper;
 import softarex.gorbachev.springbootquestionportal.repository.QuestionsRepository;
 
@@ -26,6 +29,9 @@ public class QuestionsService {
     private final UserService userService;
 
     public UUID create(QuestionForUserDto questForDto, UserDto fromUserDto) {
+        if (questForDto.getEmailForUser().equals(fromUserDto.getEmail())) {
+            throw new UserCanNotAddQuestionException(questForDto.getEmailForUser());
+        }
         Question question = questionMapper
                 .questDtoToQuestion(questionMapper
                         .questForUserDtoToQuestDto(questForDto, fromUserDto.getEmail()));
@@ -33,21 +39,34 @@ public class QuestionsService {
         return question.getId();
     }
 
-    public void delete(UUID id) {
+    public void delete(UUID id, UserDto authDto) {
         Question question = findById(id);
-        questionRepository.delete(question);
+        if (question.getFromUser().getEmail().equals(authDto.getEmail())) {
+            questionRepository.delete(question);
+        } else {
+            throw new UserCanNotDeleteQuestionException(authDto.getEmail());
+        }
     }
 
     public void update(QuestionForUserDto questForUserDto, UserDto fromUser) {
         Question question = findById(questForUserDto.getId());
-        questionMapper.updateQuestion(question, questionMapper
-                .questForUserDtoToQuestDto(questForUserDto, fromUser.getEmail()));
+        if (question.getFromUser().getEmail().equals(fromUser.getEmail()) &&
+            !questForUserDto.getEmailForUser().equals(fromUser.getEmail())) {
+            questionMapper.updateQuestion(question, questionMapper
+                    .questForUserDtoToQuestDto(questForUserDto, fromUser.getEmail()));
+        } else {
+            throw new UserCanNotChangeQuestionException(fromUser.getEmail());
+        }
     }
 
     public void answerQuestion(QuestionFromUserDto questionFromUserDto, UserDto forUserDto) {
         Question question = findById(questionFromUserDto.getId());
-        questionMapper.updateQuestion(question, questionMapper
-                .questFromUserDtoToQuestDto(questionFromUserDto, forUserDto.getEmail()));
+        if (question.getForUser().getEmail().equals(forUserDto.getEmail())) {
+            questionMapper.updateQuestion(question, questionMapper
+                    .questFromUserDtoToQuestDto(questionFromUserDto, forUserDto.getEmail()));
+        } else {
+            throw new UserCanNotChangeQuestionException(forUserDto.getEmail());
+        }
     }
 
 

@@ -55,8 +55,9 @@ public class QuestionRestController {
     }
 
     @DeleteMapping(value = QUESTIONS_ID_PV)
-    public ResponseEntity<MessageResponse> delete(@PathVariable UUID id) {
-        return questionRestService.delete(id);
+    public ResponseEntity<MessageResponse> delete(@PathVariable UUID id,
+                                                  @AuthenticationPrincipal UserDetailsImpl auth) {
+        return questionRestService.delete(id, auth);
     }
 
     @PatchMapping(value = QUESTIONS)
@@ -104,7 +105,7 @@ public class QuestionRestController {
 
     @GetMapping(QUESTIONS_FROM_ME_PVFOREMAIL_QUANTITY)
     public ResponseEntity<Long> receiveQuantityQuestionFromToForUser(@PathVariable(PV_FOREMAIL) String forEmail,
-                                                                      @AuthenticationPrincipal UserDetailsImpl fromAuth){
+                                                                     @AuthenticationPrincipal UserDetailsImpl fromAuth) {
         return questionRestService.getQuantityQuestionFromToForUser(fromAuth, forEmail);
     }
 

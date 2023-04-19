@@ -20,7 +20,7 @@ public interface QuestionsRestService {
 
     ResponseEntity<MessageResponse> answerQuestion(QuestionFromUserDto questionFromUserDto, UserDetailsImpl forUserAuth);
 
-    ResponseEntity<MessageResponse> delete(UUID id);
+    ResponseEntity<MessageResponse> delete(UUID id, UserDetailsImpl fromUserAuth);
 
     ResponseEntity<List<QuestionDto>> getLimitedNumberQuestionsFromUser(Integer page, Integer limit, UserDetailsImpl auth);
 

@@ -45,8 +45,8 @@ public class QuestionsRestServiceImpl implements QuestionsRestService {
     }
 
     @Override
-    public ResponseEntity<MessageResponse> delete(UUID id) {
-        questionsService.delete(id);
+    public ResponseEntity<MessageResponse> delete(UUID id, UserDetailsImpl auth) {
+        questionsService.delete(id, auth.getTarget());
         return new ResponseEntity<>(new MessageResponse("Question is successfully deleted."),
                 HttpStatus.OK);
     }
