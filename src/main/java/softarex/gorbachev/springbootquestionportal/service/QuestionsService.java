@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import softarex.gorbachev.springbootquestionportal.entity.Question;
-import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionForUserDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionFromUserDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserDto;
+import softarex.gorbachev.springbootquestionportal.entity.dto.*;
 import softarex.gorbachev.springbootquestionportal.exception.quest.QuestionNotFounded;
 import softarex.gorbachev.springbootquestionportal.exception.quest.UserCanNotAddQuestionException;
 import softarex.gorbachev.springbootquestionportal.exception.quest.UserCanNotChangeQuestionException;
@@ -59,17 +56,15 @@ public class QuestionsService {
         }
     }
 
-    public void answerQuestion(QuestionFromUserDto questionFromUserDto, UserDto forUserDto) {
-        Question question = findById(questionFromUserDto.getId());
-        if (question.getForUser().getEmail().equals(forUserDto.getEmail()) &&
-            question.getFromUser().getEmail().equals(questionFromUserDto.getEmailFromUser())) {
-            questionMapper.updateQuestion(question, questionMapper
-                    .questFromUserDtoToQuestDto(questionFromUserDto, forUserDto.getEmail()));
+    public void answerQuestion(AnswerQuestDto answerQuestDto, UserDto forUserDto) {
+        Question question = findById(answerQuestDto.getId());
+        if (question.getForUser().getEmail().equals(forUserDto.getEmail())) {
+            questionMapper.updateAnswerQuest(question, answerQuestDto);
         } else {
             throw new UserCanNotChangeQuestionException(forUserDto.getEmail());
         }
-    }
 
+    }
 
     public List<QuestionDto> getLimitNumberQuestionsFromUser(Integer page, Integer limit, UserDto userDto) {
         return questionMapper.questionsToDto(questionRepository

@@ -20,6 +20,7 @@ public class UserUpdateDto {
     @Size(max = MAX_SIZE_PASSWORD, message = MSG_SIZE_PASSWORD)
     private String password;
 
+    @Size(max = MAX_SIZE_PASSWORD, message = MSG_SIZE_PASSWORD)
     private String newPassword;
 
     @NotBlank(message = MSG_NOT_EMPTY)

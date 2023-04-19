@@ -8,13 +8,14 @@ import org.springframework.stereotype.Component;
 import softarex.gorbachev.springbootquestionportal.entity.AnswerType;
 import softarex.gorbachev.springbootquestionportal.entity.Question;
 import softarex.gorbachev.springbootquestionportal.entity.User;
+import softarex.gorbachev.springbootquestionportal.entity.dto.AnswerQuestDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionForUserDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionFromUserDto;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-04-17T14:53:01+0300",
+    date = "2023-04-19T20:19:21+0300",
     comments = "version: 1.5.2.Final, compiler: javac, environment: Java 17.0.3 (Oracle Corporation)"
 )
 @Component
@@ -137,6 +138,15 @@ public class QuestionMapperImpl extends QuestionMapper {
         target.setOptions( resource.getOptions() );
         target.setFromUser( resource.getFromUser() );
         target.setForUser( resource.getForUser() );
+    }
+
+    @Override
+    public void updateAnswerQuest(Question question, AnswerQuestDto answerQuestDto) {
+        if ( answerQuestDto == null ) {
+            return;
+        }
+
+        question.setAnswerText( answerQuestDto.getAnswerText() );
     }
 
     private String questionAnswerTypeNameType(Question question) {
