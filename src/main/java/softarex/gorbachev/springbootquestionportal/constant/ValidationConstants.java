@@ -34,10 +34,43 @@ public interface ValidationConstants {
 
     int MAX_SIZE_QUESTTEXT = 250;
 
-    String MSG_MAX_SIZE_QUESTTEXT = "Max length question text should be " + MAX_SIZE_QUESTTEXT;
+    String MSG_MAX_SIZE_QUESTTEXT = "The maximum length of the text can be \n" +
+                                    "no more than " + MAX_SIZE_QUESTTEXT + " characters";
 
     int MAX_SIZE_ANSWERTEXT = 250;
 
-    String MSG_MAX_SIZE_ANSWERTEXT = "Max length answer text should be " + MAX_SIZE_QUESTTEXT;
+    String MSG_MAX_SIZE_ANSWERTEXT = "The maximum length of the text can be \n" +
+                                     "no more than " + MAX_SIZE_ANSWERTEXT + " characters";
+
+    String REGEX_NAME = "(^([A-ZА-ЯЁ][a-zа-яё]{2,}))$";
+
+    String MSG_FIRSTNAME = "First name must consist of one word.\n" +
+                           "Start with  one uppercase. Remove the extra spaces.";
+
+    int MAX_SIZE_FIRSTNAME = 20;
+
+    String MSG_SIZE_FIRSTNAME = "The maximum length of the first name can be \n" +
+                                "no more than " + MAX_SIZE_FIRSTNAME + " characters";
+
+    String MSG_LASTNAME = "Last name must consist of one word.\n" +
+                          "Start with  one uppercase. Remove the extra spaces.";
+
+
+    int MAX_SIZE_LASTNAME = 20;
+
+    String MSG_SIZE_LASTNAME = "The maximum length of the last name can be \n" +
+                               "no more than " + MAX_SIZE_LASTNAME + " characters";
+
+    int MAX_SIZE_PASSWORD = 20;
+
+    String MSG_SIZE_PASSWORD = "The maximum length of the password can be \n" +
+                               "no more than " + MAX_SIZE_PASSWORD + " characters";
+    ;
+
+    int MAX_SIZE_PHONE = 20;
+
+    String MSG_SIZE_PHONE = "The maximum length of the phone can be \n" +
+                            "no more than " + MAX_SIZE_PHONE + " characters";
+    ;
 
 }

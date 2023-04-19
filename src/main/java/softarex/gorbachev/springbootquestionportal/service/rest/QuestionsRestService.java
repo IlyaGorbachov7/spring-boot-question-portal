@@ -2,9 +2,9 @@ package softarex.gorbachev.springbootquestionportal.service.rest;
 
 import org.springframework.http.ResponseEntity;
 import softarex.gorbachev.springbootquestionportal.config.security.UserDetailsImpl;
+import softarex.gorbachev.springbootquestionportal.entity.dto.AnswerQuestDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionForUserDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionFromUserDto;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageCreatedQuestResponse;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 
@@ -18,9 +18,9 @@ public interface QuestionsRestService {
 
     ResponseEntity<MessageResponse> update(QuestionForUserDto questionForUserDto, UserDetailsImpl fromUserAuth);
 
-    ResponseEntity<MessageResponse> answerQuestion(QuestionFromUserDto questionFromUserDto, UserDetailsImpl forUserAuth);
+    ResponseEntity<MessageResponse> answerQuestion(AnswerQuestDto questionFromUserDto, UserDetailsImpl forUserAuth);
 
-    ResponseEntity<MessageResponse> delete(UUID id);
+    ResponseEntity<MessageResponse> delete(UUID id, UserDetailsImpl fromUserAuth);
 
     ResponseEntity<List<QuestionDto>> getLimitedNumberQuestionsFromUser(Integer page, Integer limit, UserDetailsImpl auth);
 

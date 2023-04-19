@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import softarex.gorbachev.springbootquestionportal.entity.AnswerType;
 import softarex.gorbachev.springbootquestionportal.entity.Question;
 import softarex.gorbachev.springbootquestionportal.entity.User;
+import softarex.gorbachev.springbootquestionportal.entity.dto.AnswerQuestDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionForUserDto;
 import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionFromUserDto;
@@ -61,4 +62,7 @@ public abstract class QuestionMapper {
 
     abstract void update(@MappingTarget Question target, Question resource);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "answerText", source = "answerQuestDto.answerText")
+    public abstract void updateAnswerQuest(@MappingTarget Question question, AnswerQuestDto answerQuestDto);
 }

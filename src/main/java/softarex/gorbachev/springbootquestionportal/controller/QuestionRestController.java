@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import softarex.gorbachev.springbootquestionportal.config.security.UserDetailsImpl;
 import softarex.gorbachev.springbootquestionportal.constant.valid.OnCreate;
 import softarex.gorbachev.springbootquestionportal.constant.valid.OnUpdate;
-import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionForUserDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.QuestionFromUserDto;
-import softarex.gorbachev.springbootquestionportal.entity.dto.UserEmailDto;
+import softarex.gorbachev.springbootquestionportal.entity.dto.*;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageCreatedQuestResponse;
 import softarex.gorbachev.springbootquestionportal.service.mdls.MessageResponse;
 import softarex.gorbachev.springbootquestionportal.service.rest.QuestionsRestService;
@@ -55,15 +52,16 @@ public class QuestionRestController {
     }
 
     @DeleteMapping(value = QUESTIONS_ID_PV)
-    public ResponseEntity<MessageResponse> delete(@PathVariable UUID id) {
-        return questionRestService.delete(id);
+    public ResponseEntity<MessageResponse> delete(@PathVariable UUID id,
+                                                  @AuthenticationPrincipal UserDetailsImpl auth) {
+        return questionRestService.delete(id, auth);
     }
 
     @PatchMapping(value = QUESTIONS)
     @Validated(OnUpdate.class)
-    public ResponseEntity<MessageResponse> answerTheQuestion(@RequestBody @Valid QuestionFromUserDto questionFromUserDto,
+    public ResponseEntity<MessageResponse> answerTheQuestion(@RequestBody @Valid AnswerQuestDto answerQuestDto,
                                                              @AuthenticationPrincipal UserDetailsImpl auth) {// question for-me
-        return questionRestService.answerQuestion(questionFromUserDto, auth);
+        return questionRestService.answerQuestion(answerQuestDto, auth);
     }
 
     @GetMapping(QUESTIONS_FROM_ME_ALL)
@@ -104,7 +102,7 @@ public class QuestionRestController {
 
     @GetMapping(QUESTIONS_FROM_ME_PVFOREMAIL_QUANTITY)
     public ResponseEntity<Long> receiveQuantityQuestionFromToForUser(@PathVariable(PV_FOREMAIL) String forEmail,
-                                                                      @AuthenticationPrincipal UserDetailsImpl fromAuth){
+                                                                     @AuthenticationPrincipal UserDetailsImpl fromAuth) {
         return questionRestService.getQuantityQuestionFromToForUser(fromAuth, forEmail);
     }
 
