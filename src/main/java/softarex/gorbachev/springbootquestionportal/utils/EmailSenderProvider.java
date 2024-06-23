@@ -18,10 +18,10 @@ public class EmailSenderProvider {
 
     public void sendEmailRegistration(String emailTo, String password, String username) {
         try {
-            if (messageEmailProvider instanceof SimpleMessageEmailProvider) {
-                mailSender.send((SimpleMailMessage) messageEmailProvider.buildRegistrationMail(emailTo, password, username));
-            } else if (messageEmailProvider instanceof HtmlPageEmailProvider) {
-                mailSender.send((MimeMessage) messageEmailProvider.buildRegistrationMail(emailTo, password, username));
+            if (messageEmailProvider instanceof SimpleMessageEmailProvider simpleMsgProv) {
+                mailSender.send(simpleMsgProv.buildRegistrationMail(emailTo, password, username));
+            } else if (messageEmailProvider instanceof HtmlPageEmailProvider htmlPageProv) {
+                mailSender.send(htmlPageProv.buildRegistrationMail(emailTo, password, username));
             } else {
                 throw new IllegalArgumentException("Pleas provide some implements EmailProvider as bean object");
             }
@@ -33,10 +33,10 @@ public class EmailSenderProvider {
 
     public void sendEmailDelete(String emailTo, String username) {
         try {
-            if (messageEmailProvider instanceof SimpleMessageEmailProvider) {
-                mailSender.send((SimpleMailMessage) messageEmailProvider.buildDeletingMail(emailTo, username));
-            } else if (messageEmailProvider instanceof HtmlPageEmailProvider) {
-                mailSender.send((MimeMessage) messageEmailProvider.buildDeletingMail(emailTo, username));
+            if (messageEmailProvider instanceof SimpleMessageEmailProvider simpleMsgProv) {
+                mailSender.send(simpleMsgProv.buildDeletingMail(emailTo, username));
+            } else if (messageEmailProvider instanceof HtmlPageEmailProvider htmlPageProv) {
+                mailSender.send(htmlPageProv.buildDeletingMail(emailTo, username));
             } else {
                 throw new IllegalArgumentException("Pleas provide some implements EmailProvider as bean object");
             }
@@ -48,10 +48,10 @@ public class EmailSenderProvider {
 
     public void sendEmailConfirmationCode(String emailTo, String configurerCode) {
         try {
-            if (messageEmailProvider instanceof SimpleMessageEmailProvider) {
-                mailSender.send((SimpleMailMessage) messageEmailProvider.buildResetUserPasswordMail(emailTo, configurerCode));
-            } else if (messageEmailProvider instanceof HtmlPageEmailProvider) {
-                mailSender.send((MimeMessage) messageEmailProvider.buildResetUserPasswordMail(emailTo, configurerCode));
+            if (messageEmailProvider instanceof SimpleMessageEmailProvider simpleMsgProv) {
+                mailSender.send(simpleMsgProv.buildResetUserPasswordMail(emailTo, configurerCode));
+            } else if (messageEmailProvider instanceof HtmlPageEmailProvider htmlPageProv) {
+                mailSender.send(htmlPageProv.buildResetUserPasswordMail(emailTo, configurerCode));
             } else {
                 throw new IllegalArgumentException("Pleas provide some implements EmailProvider as bean object");
             }
