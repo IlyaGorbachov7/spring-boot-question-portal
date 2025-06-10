@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  postgres_dev:
+    image: 'postgres:14'
+    container_name: 'postgres-db-dev'
+    environment:
+      - 'POSTGRES_USER=root'
+      - 'POSTGRES_PASSWORD=root'
+      - 'POSTGRES_DB=questportalDB'
+    ports:
+      - 5432:5432
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+      - ./db-storage-dev:/var/lib/postgresql/data
+services:
+  question_portal:
+    image: ''

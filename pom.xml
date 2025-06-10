@@ -103,12 +103,29 @@
             <groupId>org.xmlunit</groupId>
             <artifactId>xmlunit-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
 
     </dependencies>
 
     <build>
+        <finalName>question-portal-back</finalName>
         <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+<!--                    <outputDirectory><outputDirectory/>-->
+                    <archive>
+                        <manifest>
+                            <mainClass>softarex.gorbachev.springbootquestionportal.SpringBootQuestionPortalApplication</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
