@@ -9,8 +9,8 @@ import softarex.gorbachev.springbootquestionportal.entity.dto.AnswerTypeDto;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-04-19T20:19:21+0300",
-    comments = "version: 1.5.2.Final, compiler: javac, environment: Java 17.0.3 (Oracle Corporation)"
+    date = "2025-06-17T15:48:55+0300",
+    comments = "version: 1.5.2.Final, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
 public class AnswerTypeMapperImpl extends AnswerTypeMapper {

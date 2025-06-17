@@ -1,18 +1,27 @@
 version: '3'
 
 services:
-  postgres_dev:
-    image: 'postgres:14'
-    container_name: 'postgres-db-dev'
+  db-mysql-dev:
+    image: mysql:8.0
+    container_name: mysql_container_dev
+    restart: always
     environment:
-      - 'POSTGRES_USER=root'
-      - 'POSTGRES_PASSWORD=root'
-      - 'POSTGRES_DB=questportalDB'
+      MYSQL_DATABASE: questportal
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
     ports:
-      - 5432:5432
+      - "3306:3306"
     volumes:
-      - ./sql:/docker-entrypoint-initdb.d
-      - ./db-storage-dev:/var/lib/postgresql/data
-services:
+      - ./db_data_dev:/var/lib/mysql
+
   question_portal:
-    image: ''
+    image: 'question-portal-dev-image'
+    container_name: 'question-portal-dev'
+    ports:
+      - 8082:8080
+    environment:
+      - 'DB_URL=jdbc:mysql://db-mysql-dev:3306/questportal?useSSL=false'
+      - 'DB_USERNAME=root'
+      - 'DB_PASSWORD=root'
+    volumes:
+      - ./Upload_dev:/Upload
