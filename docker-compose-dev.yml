@@ -7,8 +7,9 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: questportal
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: 4454
     ports:
       - "3306:3306"
     volumes:
@@ -20,8 +21,8 @@ services:
     ports:
       - 8082:8080
     environment:
-      - 'DB_URL=jdbc:mysql://db-mysql-dev:3306/questportal?useSSL=false'
-      - 'DB_USERNAME=root'
-      - 'DB_PASSWORD=root'
+      - 'DB_URL=jdbc:mysql://db-mysql-dev:3306/questportal?allowPublicKeyRetrieval=true&useSSL=false'
+      - 'DB_USERNAME=user'
+      - 'DB_PASSWORD=password'
     volumes:
       - ./Upload_dev:/Upload
