@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import softarex.gorbachev.springbootquestionportal.config.security.UserDetailsImpl;
 import softarex.gorbachev.springbootquestionportal.entity.dto.*;
+import softarex.gorbachev.springbootquestionportal.exception.QuestionPortalServerException;
 import softarex.gorbachev.springbootquestionportal.exception.login.EmailNotFoundException;
 import softarex.gorbachev.springbootquestionportal.exception.login.UserAlreadyExistsException;
 import softarex.gorbachev.springbootquestionportal.mapper.UserMapper;
@@ -18,6 +19,7 @@ import softarex.gorbachev.springbootquestionportal.service.UserService;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,8 +56,26 @@ public class UserRestServiceImpl implements UserRestService {
 
     @Transactional(readOnly = true)
     @Override
+    public ResponseEntity<UserSessionDto> validateUserBy(UserTokenDto userTokenDto, UserDetailsImpl authUser) {
+        return userService.validateUserBy(userTokenDto, authUser);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public ResponseEntity<UserSessionDto> validateUserBy(UserTokenDto userTokenDto) {
+        Optional<UserSessionDto> user = userService.validateUserBy(userTokenDto);
+        return user.isPresent() ? ResponseEntity.of(user) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public UserSessionDto currentSessionUser(UserDetailsImpl sessionDetails) {
         return userService.getUserSessionByEmail(sessionDetails.getUsername());
+    }
+
+    @Override
+    public UserDto currentUser(UserDetailsImpl sessionDetails) {
+        return userService.getUserByEmail(sessionDetails.getUsername());
     }
 
     @Override

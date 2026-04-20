@@ -10,6 +10,9 @@ public interface UsersRequestMappingConst {
     String USERS_LOGIN = "/login";
 
     String USERS_CURUSER = "/cur-user";
+    String USERS_CURUSER_FULL = "/cur-user-full";
+
+    String USERS_VALIDATE = "/validate";
 
     String USERS_RESETPASSWORD = "/reset-password";
 

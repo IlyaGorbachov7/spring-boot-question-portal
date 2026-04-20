@@ -2,7 +2,6 @@ package softarex.gorbachev.springbootquestionportal.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -60,11 +59,23 @@ public class UserRestController {
         return userRestServiceImpl.changePassword(configurationCodeDto);
     }
 
+    @GetMapping(USERS_VALIDATE)
+    public ResponseEntity<UserSessionDto> validateTokenUser(@RequestBody UserTokenDto tokenDto) {
+        return userRestServiceImpl.validateUserBy(tokenDto);
+    }
+
     @GetMapping(USERS_CURUSER)
     public ResponseEntity<UserSessionDto> currentSessionUser(@AuthenticationPrincipal UserDetailsImpl authUser) {
         UserSessionDto sessionDto = userRestServiceImpl.currentSessionUser(authUser);
         return new ResponseEntity<>(sessionDto, HttpStatus.IM_USED);
     }
+
+    @GetMapping(USERS_CURUSER_FULL)
+    public ResponseEntity<UserDto> currentSessionUserFull(@AuthenticationPrincipal UserDetailsImpl authUser) {
+        UserDto user = userRestServiceImpl.currentUser(authUser);
+        return new ResponseEntity<>(user, HttpStatus.IM_USED);
+    }
+
 
     @PutMapping(USERS_CURUSER)
     @AfterSendTo(way = PUB_USER_CRUD)

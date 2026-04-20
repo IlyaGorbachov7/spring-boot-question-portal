@@ -12,6 +12,10 @@ import java.util.Date;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
@@ -20,11 +24,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class JWTTokenHelper {
+    public JWTTokenHelper(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${jwt.token.secret}")
     private String secretKey;
@@ -45,7 +58,7 @@ public class JWTTokenHelper {
         Date dateExpire = generateExpirationDate(now);
         return Jwts.builder()
                 .setSubject(usernameAndPassword)
-                .setIssuedAt(new Date())
+                .setIssuedAt(now)
                 .setExpiration(dateExpire)
                 .signWith(SIGNATURE_ALGORITHM, secretKey)
                 .compact();
@@ -60,7 +73,7 @@ public class JWTTokenHelper {
     }
 
     private Date generateExpirationDate(Date now) {
-        return new Date(now.getTime() + 99999999999L);
+        return new Date(now.getTime() + expiresIn);
     }
 
     private Claims getAllClaimsFromToken(String token) {
@@ -163,5 +176,20 @@ public class JWTTokenHelper {
 
     public String getAuthHeaderFromHeader(HttpServletRequest request) {
         return request.getHeader("Authorization");
+    }
+
+    public boolean validateToken(@NotNull @NotEmpty String token) {
+        try {
+            String username = getUsernameFromToken(token);
+            UserDetails user = userDetailsService.loadUserByUsername(username);
+            if(validateToken(token, user)) {
+                String password = getPasswordFromToken(token);
+                return password != null && passwordEncoder.matches(password, user.getPassword());
+            }
+        }catch (Exception e) {
+            log.warn("Invalided token", e);
+            return false;
+        }
+        return false;
     }
 }

@@ -13,7 +13,13 @@ public interface UserRestService {
 
     ResponseEntity<MessageLoginResponse> login(UserLoginDto loginDto);
 
+    ResponseEntity<UserSessionDto> validateUserBy(UserTokenDto userTokenDto, UserDetailsImpl authUser);
+
+    ResponseEntity<UserSessionDto> validateUserBy(UserTokenDto userTokenDto);
+
     UserSessionDto currentSessionUser(UserDetailsImpl sessionDetails);
+
+    UserDto currentUser(UserDetailsImpl sessionDetails);
 
     ResponseEntity<MessageLoginResponse> updateSessionUser(UserUpdateDto updateDto, UserDetailsImpl authUser);
 

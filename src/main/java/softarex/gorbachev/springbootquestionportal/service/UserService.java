@@ -1,32 +1,34 @@
 package softarex.gorbachev.springbootquestionportal.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import softarex.gorbachev.springbootquestionportal.config.security.JWTTokenHelper;
+import softarex.gorbachev.springbootquestionportal.config.security.UserDetailsImpl;
 import softarex.gorbachev.springbootquestionportal.entity.PasswordConfigurerCode;
 import softarex.gorbachev.springbootquestionportal.entity.Question;
 import softarex.gorbachev.springbootquestionportal.entity.User;
 import softarex.gorbachev.springbootquestionportal.entity.dto.*;
-import softarex.gorbachev.springbootquestionportal.exception.login.EmailNotFoundException;
-import softarex.gorbachev.springbootquestionportal.exception.login.InvalidedUserPasswordException;
-import softarex.gorbachev.springbootquestionportal.exception.login.LoginException;
-import softarex.gorbachev.springbootquestionportal.exception.login.UserAlreadyExistsException;
+import softarex.gorbachev.springbootquestionportal.exception.login.*;
 import softarex.gorbachev.springbootquestionportal.mapper.UserMapper;
 import softarex.gorbachev.springbootquestionportal.repository.QuestionsRepository;
 import softarex.gorbachev.springbootquestionportal.repository.UserRepository;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -50,17 +52,41 @@ public class UserService {
     }
 
     public String loginUser(UserLoginDto loginDto) {
-        UserDto userDto = findUserByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword());
+        // введенный пароль проверяется в DaoAuthenticationProvider.additionalAuthenticationChecks(...)
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
+            Authentication authenticationRaw = new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
+            Authentication authentication = authenticationManager.authenticate(authenticationRaw); // here check password in user
+//                                                              ↓
+            // Шаг 3: AuthenticationManager вызывает DaoAuthenticationProvider
+            // Шаг 4: DaoAuthenticationProvider вызывает UserDetailsService.loadUserByUsername()
+            // Шаг 5: Получаем UserDetails с захэшированным паролем из БД
+            // Шаг 6: Сравниваем raw пароль с захэшированным через PasswordEncoder
+            //         passwordEncoder.matches(rawPassword, hashedPasswordFromDB)
+
+            // Шаг 7: Если пароли совпадают - аутентификация успешна
+            //         Если нет - исключение BadCredentialsException
 
             String token = tokenHelper.generateToken(loginDto.getEmail(), loginDto.getPassword());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
             return token;
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username or password");
         }
+    }
+
+    public Optional<UserSessionDto> validateUserBy(UserTokenDto userTokenDto) {
+        try{
+            if (!tokenHelper.validateToken(userTokenDto.getToken())) {
+                return Optional.empty();
+            }
+            return Optional.of(userMapper.userToSessionDto(findUserEntityById(userTokenDto.getId())));
+        }catch (UserNotFound e) {
+            return Optional.empty();
+        }
+    }
+
+    public ResponseEntity<UserSessionDto> validateUserBy(UserTokenDto userTokenDto, UserDetailsImpl authUser) {
+        return null;
     }
 
     public void updateUser(UserUpdateDto updateDto, UserDto userDto) {
@@ -118,6 +144,17 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .map(userMapper::userToSessionDto)
                 .orElseThrow(() -> new EmailNotFoundException(email));
+    }
+
+    public UserDto getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(userMapper::userToUserDto)
+                .orElseThrow(() -> new EmailNotFoundException(email));
+    }
+
+    public User findUserEntityById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(UserNotFound::new);
     }
 
     public UserDto findUserByEmail(String email) {
