@@ -8,6 +8,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import softarex.gorbachev.springbootquestionportal.config.security.JWTTokenHelper;
@@ -76,13 +77,22 @@ public class UserService {
 
     public Optional<UserSessionDto> validateUserBy(UserTokenDto userTokenDto) {
         try{
-            if (!tokenHelper.validateToken(userTokenDto.getToken())) {
+            // trust that token is validated
+            Optional<UserDetails> userAuthAssume = tokenHelper.validateToken(userTokenDto.getToken());
+            if (userAuthAssume.isEmpty()) {
                 return Optional.empty();
             }
-            return Optional.of(userMapper.userToSessionDto(findUserEntityById(userTokenDto.getId())));
+            // trust that user given from Token equals with User founded from userTokenDto.id.
+            // This is necessary so that attackers do not replace someone else's token with their ID.
+            User user = findUserEntityById(userTokenDto.getId());
+            if(user.getEmail().equals(userAuthAssume.get().getUsername())
+                    && user.getPassword().equals(userAuthAssume.get().getPassword())) {
+                return Optional.of(userMapper.userToSessionDto(user));
+            }
         }catch (UserNotFound e) {
-            return Optional.empty();
+            log.warn("user not found by id: {}", userTokenDto.getId());
         }
+        return Optional.empty();
     }
 
     public ResponseEntity<UserSessionDto> validateUserBy(UserTokenDto userTokenDto, UserDetailsImpl authUser) {

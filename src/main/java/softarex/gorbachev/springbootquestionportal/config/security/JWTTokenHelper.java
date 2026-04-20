@@ -9,6 +9,7 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalField;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -178,18 +179,18 @@ public class JWTTokenHelper {
         return request.getHeader("Authorization");
     }
 
-    public boolean validateToken(@NotNull @NotEmpty String token) {
+    public Optional<UserDetails> validateToken(@NotNull @NotEmpty String token) {
         try {
             String username = getUsernameFromToken(token);
             UserDetails user = userDetailsService.loadUserByUsername(username);
             if(validateToken(token, user)) {
                 String password = getPasswordFromToken(token);
-                return password != null && passwordEncoder.matches(password, user.getPassword());
+                return (password != null && passwordEncoder.matches(password, user.getPassword()))
+                        ? Optional.of(user) : Optional.empty();
             }
         }catch (Exception e) {
             log.warn("Invalided token", e);
-            return false;
         }
-        return false;
+        return Optional.empty();
     }
 }
