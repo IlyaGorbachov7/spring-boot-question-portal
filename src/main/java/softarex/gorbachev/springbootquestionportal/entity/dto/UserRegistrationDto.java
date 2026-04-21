@@ -17,6 +17,10 @@ public class UserRegistrationDto {
     private String password;
 
     @NotBlank(message = MSG_NOT_BLANK)
+    @Size(min = MIN_SIZE_NICKNAME, max = MAX_SIZE_NICKNAME)
+    private String nickname;
+
+    @NotBlank(message = MSG_NOT_BLANK)
     @Pattern(regexp = REGEX_NAME, message = MSG_FIRSTNAME)
     @Size(max = MAX_SIZE_FIRSTNAME, message = MSG_SIZE_FIRSTNAME)
     private String firstName;

@@ -12,6 +12,8 @@ public final class UserDto {
 
     private String id;
 
+    private String nickname;
+
     private String password;
 
     private String firstName;

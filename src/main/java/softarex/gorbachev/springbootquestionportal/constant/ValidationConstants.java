@@ -65,7 +65,11 @@ public interface ValidationConstants {
 
     String MSG_SIZE_PASSWORD = "The maximum length of the password can be \n" +
                                "no more than " + MAX_SIZE_PASSWORD + " characters";
-    ;
+    int MIN_SIZE_NICKNAME = 5;
+    int MAX_SIZE_NICKNAME = 5;
+    String MSG_MIN_SIZE_NICKNAME = "The minimum length of the nickname can be\n" +
+            "no more than "+MIN_SIZE_NICKNAME + " characters and maximum length of the password\n" +
+            "can be no more than " + MAX_SIZE_NICKNAME + " characters";
 
     int MAX_SIZE_PHONE = 20;
 

@@ -18,6 +18,12 @@ public class User extends BaseEntity{
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "email", unique = true)
+    private String email;
+
+    @Column(name = "nickname", unique = true, length = 25)
+    private String nickname;
+
     @ToString.Exclude
     @Column(name = "first_name", length = 50)
     private String firstName;
@@ -25,9 +31,6 @@ public class User extends BaseEntity{
     @ToString.Exclude
     @Column(name = "last_name", length = 50)
     private String lastName;
-
-    @Column(name = "email", unique = true)
-    private String email;
 
     @ToString.Exclude
     @Column(name = "phone", length = 25)

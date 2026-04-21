@@ -106,6 +106,7 @@ public class UserService {
                         throw new UserAlreadyExistsException(user.getEmail());
                     });
         }
+
         userMapper.updateUserDtoFromUpdateDto(userDto, updateDto);
         if (Objects.equals(userDto.getPassword(), updateDto.getNewPassword())) {
             updateDto.setPassword(userDto.getPassword());

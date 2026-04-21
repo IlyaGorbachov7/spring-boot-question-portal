@@ -14,6 +14,9 @@ public class UserSessionDto {
     private String email;
 
     @NotEmpty
+    private String nickname;
+
+    @NotEmpty
     private String firstName;
 
     @NotEmpty
